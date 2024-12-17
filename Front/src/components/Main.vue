@@ -3,14 +3,17 @@
     <Header @selectedCity="fetchWeather" />
     <div class="currentWeatherInfo" v-if="weatherInfo">
       <div>
+        <p class="curTime">{{ getCurrentTime() }}</p>
+        <p class="city">{{ weatherInfo.name }}</p>
+        <p class="temperature">{{ weatherInfo.main.temp.toFixed(1) }}°C</p>
+        <p class="description">{{ weatherInfo.weather[0].description }}</p>
+      </div>
+      <div>
         <img
           :src="`https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png`"
           alt=""
         />
       </div>
-      <h3>{{ weatherInfo.name }}</h3>
-      <p>Temperature : {{ weatherInfo.main.temp.toFixed(1) }}°C</p>
-      <p>{{ weatherInfo.weather[0].description }}</p>
     </div>
     <div class="forecast-group" v-if="forecastInfo">
       <ul class="forecast-list">
@@ -28,8 +31,8 @@
         </li>
       </ul>
     </div>
-    <div>
-      <h3>Today's Outfit</h3>
+    <div v-if="outfitPart">
+      <h3>Trendy Outfit</h3>
     </div>
   </div>
 </template>
@@ -46,6 +49,7 @@ export default {
     return {
       weatherInfo: null,
       forecastInfo: [],
+      outfitPart: false,
     };
   },
 
@@ -60,6 +64,7 @@ export default {
         .then((res) => {
           console.log(res);
           this.weatherInfo = res.data;
+          this.outfitPart = true;
         })
         .catch((err) => {
           console.error(err);
@@ -73,6 +78,16 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+    getCurrentTime() {
+      const date = new Date();
+      let hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours < 12 ? "AM" : "PM";
+      hours = hours % 12 || 12;
+      const formattedHour = hours.toString().padStart(2, "0");
+      const formattedMinute = minutes.toString().padStart(2, "0");
+      return `${formattedHour}:${formattedMinute} ${ampm}`;
     },
 
     formatDate(dateTime) {
@@ -90,13 +105,62 @@ export default {
       hours = hours % 12 || 12;
       return `${hours}${ampm}`;
     },
+    async getLocation() {
+      if (!navigator.geolocation) {
+        console.error("이 브라우저는 Geolocation을 지원하지 않습니다");
+      }
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        alert(`위도 : ${lat}, 경도 : ${lon}`);
+        await this.fetchWeatherByCoordinates(lat, lon);
+      } catch (error) {
+        console.error("위치를 가져오지 못했습니다", error);
+      }
+    },
+    async fetchWeatherByCoordinates(lat, lon) {
+      const apiKey = "d0dc294ff2755b5c5e7c0f6f83082eca";
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=40&appid=${apiKey}&units=metric`;
+
+      await axios
+        .get(url)
+        .then((res) => {
+          console.log(res);
+          this.weatherInfo = res.data;
+          this.outfitPart = true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      await axios
+        .get(forecastUrl)
+        .then((res) => {
+          console.log(res);
+          this.forecastInfo = res.data.list;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  mounted() {
+    this.getLocation();
   },
 };
 </script>
 
 <style scoped>
 .currentWeatherInfo {
-  text-align: center;
+  background-color: white;
+  margin: 20px 20px;
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: center;
+  display: flex;
 }
 
 .currentWeatherInfo img {
@@ -108,7 +172,8 @@ export default {
   overflow-x: auto;
   background-color: white;
   border-radius: 10px;
-  margin: 0 20px;
+  margin: 20px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .forecast-list {

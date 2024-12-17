@@ -24,7 +24,7 @@ export default {
 }
 
 #app {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
 }
 
 #wrap {
@@ -35,6 +35,6 @@ export default {
   max-height: 1000px;
   overflow-y: auto;
   margin: 0 auto;
-  background-color: rgb(218, 218, 218);
+  background-color: rgb(245, 242, 242);
 }
 </style>

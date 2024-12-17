@@ -1,10 +1,24 @@
 <template>
   <div>
-    <div class="nav-bar"></div>
-    <div class="search-div">
-      <div class="input-group input-group-sm mb-3" style="width: 300px">
-        <div class="input-wrapper">
+    <div class="input-group input-group-sm mb-3">
+      <div class="input-wrapper">
+        <img src="../images/menu.png" alt="" class="menuImage" />
+        <p class="input-title">Weather & Outfit</p>
+        <img
+          v-if="showSearchImg"
+          src="../images/search.png"
+          alt=""
+          class="searchImage"
+          @click="showSearchBar"
+        />
+        <transition
+          name="slide"
+          @before-enter="beforeEnter"
+          @enter="enter"
+          @leave="leave"
+        >
           <input
+            v-show="showSearch"
             type="text"
             class="form-control search-input"
             aria-label="Sizing example input"
@@ -13,19 +27,19 @@
             @input="filterCities"
             placeholder="Search city name..."
           />
-        </div>
-        <div class="city-list">
-          <ul v-if="filteredCities.length" class="list-group">
-            <li
-              class="list-group-item"
-              v-for="(city, index) in filteredCities"
-              :key="index"
-              @click="selectCity(city)"
-            >
-              {{ city.name }}
-            </li>
-          </ul>
-        </div>
+        </transition>
+      </div>
+      <div class="city-list">
+        <ul v-if="filteredCities.length" class="list-group">
+          <li
+            class="list-group-item"
+            v-for="(city, index) in filteredCities"
+            :key="index"
+            @click="selectCity(city)"
+          >
+            {{ city.name }}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -40,6 +54,8 @@ export default {
       searchCity: "",
       cities: cities,
       filteredCities: [],
+      showSearch: false,
+      showSearchImg: true,
     };
   },
   methods: {
@@ -59,6 +75,32 @@ export default {
       this.filteredCities = [];
       this.$emit("selectedCity", city);
     },
+    showSearchBar() {
+      console.log("search Bar toggled");
+      this.showSearch = true;
+      this.showSearchImg = false;
+    },
+    //애니메이션 시작하기 전
+    beforeEnter(el) {
+      el.style.transform = "translateX(100%)"; //오른쪽 외부에 있도록 설정
+      el.style.opacity = 0; //투명하게 만듬
+    },
+    //화면에 나타나기 시작하는 시점
+    enter(el, done) {
+      el.offsetHeight; // 애니메이션 실행
+      el.style.transition =
+        "transform 0.3s ease-in-out, opacity 0.3s ease-in-out";
+      el.style.transform = "translateX(0)";
+      el.style.opacity = 1; //불투명하게 만듬
+      done(); // 완료
+    },
+    leave(el, done) {
+      el.style.transition =
+        "transform 0.3s ease-in-out, opacity 0.3s ease-in-out";
+      el.style.transform = "translateX(100%)";
+      el.style.opacity = 0;
+      done();
+    },
   },
 };
 </script>
@@ -67,26 +109,46 @@ export default {
 .input-group {
   position: relative;
 }
-.search-div {
-  /* background-color: rgb(241, 232, 232); */
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .input-wrapper {
+  margin: 20px 10px 20px 10px;
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
+.menuImage {
+  width: 25px;
+  height: 25px;
+  margin-right: auto;
+  cursor: pointer;
+}
+
+.searchImage {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.input-title {
+  margin: 0;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .search-input {
-  width: 100%;
+  width: 250px;
   padding: 10px 40px 10px 20px;
   border: 2px solid #ccc;
   border-radius: 30px;
   font-size: 16px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-left: auto;
 }
 
 .search-input:focus {
@@ -98,11 +160,10 @@ export default {
 .city-list {
   position: absolute;
   top: 100%;
-  left: 0;
-  width: 100%;
+  right: 0;
+  width: 250px;
   max-height: 200px;
   overflow-y: auto;
-
   z-index: 10;
 }
 
@@ -112,7 +173,7 @@ export default {
 }
 
 .city-list .list-group-item:hover {
-  background-color: #f1f1f1; /* 호버 시 배경색 변경 */
+  background-color: #f1f1f1;
 }
 
 ::-webkit-scrollbar {
