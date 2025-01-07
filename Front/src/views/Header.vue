@@ -2,7 +2,19 @@
   <div>
     <div class="input-group input-group-sm mb-3">
       <div class="input-wrapper">
-        <img src="../images/menu.png" alt="" class="menuImage" />
+        <img
+          v-if="isLoginSuccess == null"
+          src="../images/login.png"
+          alt=""
+          class="loginImage"
+          @click="enterLoginPage"
+        />
+        <img
+          v-if="isLoginSuccess != null"
+          src="../images/user.png"
+          alt=""
+          class="userImage"
+        />
         <p class="input-title">Weather & Outfit</p>
         <img
           v-if="showSearchImg"
@@ -11,6 +23,7 @@
           class="searchImage"
           @click="showSearchBar"
         />
+
         <transition
           name="slide"
           @before-enter="beforeEnter"
@@ -25,7 +38,7 @@
             aria-describedby="inputGroup-sizing-sm"
             v-model="searchCity"
             @input="filterCities"
-            placeholder="Search city name..."
+            placeholder="Search"
           />
         </transition>
       </div>
@@ -46,6 +59,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import cities from "../json/korean_cities.json";
 export default {
   name: "AppHeader",
@@ -58,7 +72,20 @@ export default {
       showSearchImg: true,
     };
   },
+  computed: {
+    ...mapGetters(["isLoginSuccess"]),
+  },
+  created() {
+    this.$store.dispatch("initLoginStatus");
+  },
+  mounted() {
+    console.log("Header.vue loginSuccess: ", this.isLoginSuccess);
+  },
   methods: {
+    enterLoginPage() {
+      this.$router.push({ name: "Login" });
+    },
+
     filterCities() {
       if (!this.searchCity) {
         this.filteredCities = [];
@@ -77,6 +104,7 @@ export default {
     },
     showSearchBar() {
       console.log("search Bar toggled");
+      console.log(this.isLoginSuccess);
       this.showSearch = true;
       this.showSearchImg = false;
     },
@@ -106,10 +134,6 @@ export default {
 </script>
 
 <style scoped>
-.input-group {
-  position: relative;
-}
-
 .input-wrapper {
   margin: 20px 10px 20px 10px;
   position: relative;
@@ -117,10 +141,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
 }
 
-.menuImage {
+.loginImage .userImage {
   width: 25px;
   height: 25px;
   margin-right: auto;
@@ -128,8 +151,10 @@ export default {
 }
 
 .searchImage {
+  position: absolute;
   width: 25px;
   height: 25px;
+  right: 10px;
   cursor: pointer;
 }
 
@@ -143,8 +168,7 @@ export default {
   transform: translateX(-50%);
 }
 .search-input {
-  width: 250px;
-  padding: 10px 40px 10px 20px;
+  width: 180px;
   border: 2px solid #ccc;
   border-radius: 30px;
   font-size: 16px;
@@ -161,7 +185,7 @@ export default {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 250px;
+  width: 180px;
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;

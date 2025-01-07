@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDTO login(UserLoginDTO loginDTO) {
+		log.info("service LoginInfo  {} ", loginDTO.toString());
 		return userDao.login(loginDTO);
 	}
 

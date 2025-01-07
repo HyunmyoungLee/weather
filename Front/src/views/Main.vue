@@ -55,12 +55,10 @@ export default {
 
   methods: {
     async fetchWeather(city) {
-      const apiKey = "d0dc294ff2755b5c5e7c0f6f83082eca";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city.name}&appid=${apiKey}&units=metric`;
-      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city.name}&cnt=40&appid=${apiKey}&units=metric`;
-
       await axios
-        .get(url)
+        .get("http://localhost:8081/api/weather/city", {
+          params: { city: city.name },
+        })
         .then((res) => {
           console.log(res);
           this.weatherInfo = res.data;
@@ -70,7 +68,9 @@ export default {
           console.error(err);
         });
       await axios
-        .get(forecastUrl)
+        .get("http://localhost:8081/api/weather/forecast/city", {
+          params: { city: city.name },
+        })
         .then((res) => {
           console.log(res);
           this.forecastInfo = res.data.list;
@@ -122,12 +122,10 @@ export default {
       }
     },
     async fetchWeatherByCoordinates(lat, lon) {
-      const apiKey = "d0dc294ff2755b5c5e7c0f6f83082eca";
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-      const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&cnt=40&appid=${apiKey}&units=metric`;
-
       await axios
-        .get(url)
+        .get("http://localhost:8081/api/weather/coordinate", {
+          params: { lat: lat, lon: lon },
+        })
         .then((res) => {
           console.log(res);
           this.weatherInfo = res.data;
@@ -137,7 +135,9 @@ export default {
           console.error(err);
         });
       await axios
-        .get(forecastUrl)
+        .get("http://localhost:8081/api/weather/forecast/coordinate", {
+          params: { lat: lat, lon: lon },
+        })
         .then((res) => {
           console.log(res);
           this.forecastInfo = res.data.list;

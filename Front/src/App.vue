@@ -1,18 +1,14 @@
 <template>
   <div id="wrap">
-    <Main />
+    <router-view> </router-view>
     <div></div>
   </div>
 </template>
 
 <script>
-import Main from "./components/Main.vue";
-
 export default {
   name: "App",
-  components: {
-    Main,
-  },
+  components: {},
 };
 </script>
 
@@ -29,7 +25,7 @@ export default {
 
 #wrap {
   background-repeat: no-repeat;
-  width: 800px;
+  width: 600px;
   min-width: 400px;
   height: 1120px;
   max-height: 1000px;

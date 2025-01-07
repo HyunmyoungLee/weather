@@ -26,6 +26,7 @@ public class UserDAOImpl implements UserDAO{
 
 	@Override
 	public UserDTO login(UserLoginDTO loginDTO) {
+		log.info("DAO LoginInfo  {} ", loginDTO.toString());
 		return ses.selectOne(NS+"login", loginDTO);
 	}
 	

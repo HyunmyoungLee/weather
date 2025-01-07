@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/user")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:8080")
 public class UserController {
 	
 	private final String UNAUTHORIZED_MESSAGE = "로그인 정보가 없습니다.";
@@ -54,10 +56,12 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/login", produces ="application/json;charset=UTF-8")
-	public ResponseEntity<Object> userLogin(@RequestBody UserLoginDTO loginDTO, HttpSession session, HttpServletResponse response){
+	public ResponseEntity<Object> userLogin(@RequestBody UserLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response){
 			Map<String, String>loginResponse = new HashMap<String, String>();
+			log.info("{}",loginDTO.toString());
 			UserDTO loginInfo = service.login(loginDTO);
 			if(loginInfo != null) {
+				HttpSession session = request.getSession(true);
 				loginResponse.put("loginSuccess", loginInfo.getName());
 				session.setAttribute("user", loginInfo);
 				log.info("로그인 성공 세션 생성 : {}", session.getAttribute("user"));
@@ -66,7 +70,12 @@ public class UserController {
 				Cookie cookie = new Cookie("JSESSIONID", session.getId());
 				cookie.setMaxAge(1800); // 30분
 				cookie.setPath("/");
+				cookie.setSecure(false);
 				response.addCookie(cookie);
+				
+				log.info("Cookie Name: {}", cookie.getName());
+				log.info("Cookie Value: {}", cookie.getValue());
+				log.info("Cookie Path: {}", cookie.getPath());
 				
 				return ResponseEntity.ok(loginResponse);
 			} else {
