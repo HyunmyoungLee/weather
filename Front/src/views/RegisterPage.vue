@@ -5,34 +5,77 @@
     </div>
 
     <div id="register_box">
-      <input type="text" placeholder="이메일을 입력해주세요" />
+      <input
+        type="email"
+        v-model="userInfo.email"
+        @blur="checkDuplicateEmail"
+        placeholder="이메일을 입력해주세요"
+        :readonly="isEmailReadOnly"
+        :disabled="isEmailReadOnly"
+      />
       <br />
+      <button id="authButton" v-if="showAuthCode" @click="sendAuthCode()">
+        인증번호 요청
+      </button>
+      <input
+        type="text"
+        v-if="showAuthInput"
+        v-model="userInfo.authNumber"
+        placeholder="인증번호"
+      />
+      <button id="checkAuthButton" v-if="showAuthInput" @click="checkAuthCode">
+        인증번호 확인
+      </button>
+      <p id="authErrorMessage" v-if="authErrorMessage">
+        {{ authErrorMessage }}
+      </p>
       <input
         type="password"
+        v-model="userInfo.password"
         placeholder="비밀번호(영문,숫자,특수기호 포함 8-20자)"
       />
       <br />
-      <input type="password" placeholder="비밀번호 재입력" />
-      <br />
-      <input type="text" placeholder="이름" />
+
+      <input type="text" v-model="userInfo.name" placeholder="이름" />
       <br />
       <input type="text" id="postcode" placeholder="우편번호" />
       <br />
       <input type="button" @click="execDaumPostcode()" value="우편번호 찾기" />
       <br />
-      <input type="text" id="roadAddress" placeholder="도로명 주소" />
+      <input
+        type="text"
+        id="roadAddress"
+        v-model="userInfo.address"
+        placeholder="도로명 주소"
+      />
       <br />
-      <span class="submit"><button>회원가입</button></span>
+      <p id="errorMsg" v-if="errorMessage">{{ errorMessage }}</p>
+      <span class="submit"
+        ><button @click="registerUser">회원가입</button></span
+      >
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
+import qs from "qs";
 
 export default {
   data() {
     return {
       isPostCodeLoaded: false,
+      showAuthCode: false,
+      showAuthInput: false,
+      isEmailReadOnly: false,
+      authErrorMessage: "",
+      errorMessage: "",
+      userInfo: {
+        email: "",
+        password: "",
+        name: "",
+        address: "",
+        authNumber: "",
+      },
     };
   },
   created() {
@@ -53,6 +96,91 @@ export default {
     document.head.appendChild(script);
   },
   methods: {
+    async sendAuthCode() {
+      console.log("check valid email : ", this.userInfo.email);
+
+      try {
+        await axios
+          .post(
+            "http://localhost:8081/user/sendAuthCode",
+            qs.stringify(this.userInfo)
+          )
+          .then((res) => {
+            console.log(res);
+            alert("인증번호가 전송되었습니다 메일을 확인해주세요");
+            this.showAuthInput = true;
+            this.showAuthCode = false;
+          });
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async checkAuthCode() {
+      console.log(this.userInfo.authNumber);
+      try {
+        await axios
+          .get("http://localhost:8081/user/checkAuthCode", {
+            params: {
+              email: this.userInfo.email,
+              authNumber: this.userInfo.authNumber,
+            },
+          })
+          .then((res) => {
+            console.log(res);
+            alert(res.data);
+            this.authErrorMessage = "";
+            this.showAuthInput = false;
+            this.isEmailReadOnly = true;
+          });
+      } catch (error) {
+        console.error(error);
+        this.authErrorMessage = error.response.data;
+      }
+    },
+    async checkDuplicateEmail() {
+      console.log("check email", this.userInfo.email);
+      try {
+        await axios
+          .get("http://localhost:8081/user/checkEmail", {
+            params: {
+              email: this.userInfo.email,
+            },
+          })
+          .then((response) => {
+            if (response.data === "") {
+              this.showAuthCode = true;
+              this.errorMessage = "";
+            } else {
+              this.errorMessage = "이미 사용중인 이메일입니다.";
+              this.showAuthCode = false;
+            }
+          });
+      } catch (error) {
+        if (error.status === 400) {
+          this.errorMessage = error.response.data;
+        }
+      }
+    },
+    async registerUser() {
+      try {
+        await axios
+          .post(
+            "http://localhost:8081/user/register",
+            qs.stringify(this.userInfo)
+          )
+          .then((response) => {
+            console.log(response);
+            this.errorMessage = "";
+            alert("회원가입이 성공적으로 완료되었습니다");
+            location.href = "/login";
+          });
+      } catch (error) {
+        console.error(error.response);
+        if (error.status === 400) {
+          this.errorMessage = error.response.data;
+        }
+      }
+    },
     checkLogin() {
       axios
         .get("http://localhost:8081/user/status")
@@ -151,7 +279,23 @@ export default {
   background-color: #ffffff;
   margin-bottom: 10px;
 }
-
+#authButton,
+#checkAuthButton {
+  width: 100%;
+  height: 60px;
+  color: #ffffff;
+  background-color: #000000;
+  text-align: center;
+  border: none;
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#errorMsg,
+#authErrorMessage {
+  color: red;
+}
 .submit {
   display: block;
   margin: 10px 0 20px;

@@ -11,4 +11,9 @@
 		WHERE EMAIL = #{email}
 		AND password = SHA2(#{password}, 256)
 	</select>
+	
+	<select id="checkEmail" resultType="String">
+		SELECT EMAIL FROM USER
+		WHERE EMAIL = #{email}
+	</select>
 </mapper>

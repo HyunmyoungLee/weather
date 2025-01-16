@@ -29,5 +29,14 @@ public class UserDAOImpl implements UserDAO{
 		log.info("DAO LoginInfo  {} ", loginDTO.toString());
 		return ses.selectOne(NS+"login", loginDTO);
 	}
+
+	public String checkEmail(String email) {
+		String userEmail = ses.selectOne(NS+"checkEmail", email);
+		if(userEmail == null) {
+			return "";
+		} else {
+			return userEmail;
+		}	
+	}
 	
 }

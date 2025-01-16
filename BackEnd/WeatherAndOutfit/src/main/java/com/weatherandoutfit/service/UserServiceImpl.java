@@ -36,4 +36,9 @@ public class UserServiceImpl implements UserService {
 		return userDao.login(loginDTO);
 	}
 
+	public String checkEmail(String email) {
+		
+		return userDao.checkEmail(email);
+	}
+
 }

@@ -7,4 +7,5 @@ public interface UserService {
 
 	public int registUser(UserDTO user);
 	public UserDTO login(UserLoginDTO loginDTO);
+	public String checkEmail(String email);
 }

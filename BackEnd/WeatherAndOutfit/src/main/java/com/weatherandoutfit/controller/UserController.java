@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.junit.runners.Parameterized.Parameter;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
 import com.weatherandoutfit.domain.UserDTO;
+import com.weatherandoutfit.infra.RegisterValidator;
 import com.weatherandoutfit.infra.ValidationException;
 import com.weatherandoutfit.service.UserServiceImpl;
 
@@ -36,24 +39,6 @@ public class UserController {
 	private final String UNAUTHORIZED_MESSAGE = "로그인 정보가 없습니다.";
 	@Autowired
 	private UserServiceImpl service;
-	
-	@PostMapping(value = "/register",  produces = "application/json;charset=UTF-8")
-	public ResponseEntity<Object> userRegister(@ModelAttribute UserDTO user){
-		log.info("{}", user);
-		int registUser = 0;
-		try {
-			registUser = service.registUser(user);
-		}catch(ValidationException e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}catch(DuplicateKeyException | MyBatisSystemException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("중복된 이메일입니다.");
-		}catch(Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-		return ResponseEntity.ok(registUser > 0 ? "register Success" : "");
-	}
 	
 	@PostMapping(value = "/login", produces ="application/json;charset=UTF-8")
 	public ResponseEntity<Object> userLogin(@RequestBody UserLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response){

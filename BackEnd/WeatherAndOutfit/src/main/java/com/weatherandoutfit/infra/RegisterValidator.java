@@ -9,7 +9,7 @@ public class RegisterValidator {
 	private final String SUCCESS = "success";
 	
 	//이메일 형식 
-	private String validateEmail(String email) {
+	public String validateEmail(String email) {
 		if(email != null) {
 			String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 			if(!Pattern.matches(emailRegex, email)) {
@@ -22,7 +22,7 @@ public class RegisterValidator {
 	}
 	
 	//비밀번호 영문숫자특수기호 조합 8자리 이상 16자 이하
-	private String validatePassword(String password) {
+	public String validatePassword(String password) {
 		if(password != null) {
 			String pwdRegex = "^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,16}$";
 			if(!Pattern.matches(pwdRegex,password)) {
