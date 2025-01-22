@@ -30,8 +30,8 @@
       </label>
       <ul id="sub_menu">
         <li><a @click="goToRegister">회원 가입</a></li>
-        <li><a href="#">아이디 찾기</a></li>
-        <li><a href="#">비밀번호 찾기</a></li>
+        <li><a @click="goToIdInquiry">아이디 찾기</a></li>
+        <li><a @click="goToPwdInquiry">비밀번호 찾기</a></li>
       </ul>
     </div>
     <div id="socialLogin">
@@ -105,6 +105,12 @@ export default {
     },
     goToRegister() {
       this.$router.push({ name: "Register" });
+    },
+    goToIdInquiry() {
+      this.$router.push({ name: "IdInquiry" });
+    },
+    goToPwdInquiry() {
+      this.$router.push({ name: "PwdInquiry" });
     },
   },
 };

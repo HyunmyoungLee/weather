@@ -1,5 +1,6 @@
 package com.weatherandoutfit.controller;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -7,25 +8,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.runners.Parameterized.Parameter;
-import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
+import com.weatherandoutfit.domain.CheckIdDTO;
+import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
-import com.weatherandoutfit.infra.RegisterValidator;
-import com.weatherandoutfit.infra.ValidationException;
 import com.weatherandoutfit.service.UserServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +91,23 @@ public class UserController {
 			map.put("name", ((UserDTO)sessionData).getName());
 		}
 		return ResponseEntity.ok(map);
-		
+	}
+	
+	@GetMapping(value="/checkId", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> checkId(@ModelAttribute CheckIdDTO idDTO){
+		log.info(idDTO.toString());
+		List<String> emailList = service.getEmailList(idDTO);
+		return ResponseEntity.ok(emailList);
+	}
+	
+	@PutMapping(value="/setNewPassword", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> setPassword(@RequestBody UpdatePasswordDTO updateDTO){
+		log.info("{}", updateDTO.toString());
+		int result = service.updatePassword(updateDTO);
+		if(result == 1) {
+				return ResponseEntity.ok("비밀번호가 변경되었습니다 로그인해주세요");
+		} else {
+			return ResponseEntity.badRequest().body("서버 오류로 인해 비밀번호 변경에 실패했습니다.");
+		}
 	}
 }

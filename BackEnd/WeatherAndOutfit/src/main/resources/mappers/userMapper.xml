@@ -3,7 +3,7 @@
 <mapper namespace="com.weatherandoutfit.mappers.userMapper">
 	<insert id="registUser">
 		INSERT INTO USER
-		VALUES(#{email}, SHA2(#{password}, 256), #{name}, #{address})
+		VALUES(#{email}, SHA2(#{password}, 256), #{name},#{birthdate}, #{address})
 	</insert>
 	
 	<select id="login" resultType="com.weatherandoutfit.domain.UserDTO">
@@ -16,4 +16,15 @@
 		SELECT EMAIL FROM USER
 		WHERE EMAIL = #{email}
 	</select>
+	
+	<select id="getEmailList" resultType="String">
+		SELECT EMAIL FROM USER
+		WHERE NAME = #{name} and BIRTHDATE = #{birthdate}
+	</select>
+	
+	<update id="updatePwd">
+		UPDATE user
+		SET password = SHA2(#{password},256)
+		WHERE email = #{email}
+	</update>
 </mapper>

@@ -23,8 +23,23 @@
         v-model="userInfo.authNumber"
         placeholder="인증번호"
       />
-      <button id="checkAuthButton" v-if="showAuthInput" @click="checkAuthCode">
+      <p id="timer" v-if="timeCount > 0 && showAuthInput">{{ formatTime }}</p>
+      <p v-if="timeCount === 0 && showAuthInput">
+        인증번호가 만료되었습니다 다시 인증요청해주세요.
+      </p>
+      <button
+        id="checkAuthButton"
+        v-if="showAuthInput && timeCount > 0"
+        @click="checkAuthCode"
+      >
         인증번호 확인
+      </button>
+      <button
+        id="authButton"
+        v-if="timeCount === 0 && showAuthInput"
+        @click="sendAuthCode()"
+      >
+        인증번호 재요청
       </button>
       <p id="authErrorMessage" v-if="authErrorMessage">
         {{ authErrorMessage }}
@@ -37,6 +52,13 @@
       <br />
 
       <input type="text" v-model="userInfo.name" placeholder="이름" />
+      <br />
+      <input
+        type="date"
+        id="birthdate"
+        v-model="userInfo.birthdate"
+        :max="maxDate"
+      />
       <br />
       <input type="text" id="postcode" placeholder="우편번호" />
       <br />
@@ -69,17 +91,29 @@ export default {
       isEmailReadOnly: false,
       authErrorMessage: "",
       errorMessage: "",
+      validCode: false,
+      maxDate: new Date().toISOString().split("T")[0],
+      timer: null,
+      timeCount: 0,
       userInfo: {
         email: "",
         password: "",
         name: "",
         address: "",
         authNumber: "",
+        birthdate: "",
       },
     };
   },
   created() {
     this.checkLogin();
+  },
+  computed: {
+    formatTime() {
+      const minutes = Math.floor(this.timeCount / 60);
+      const seconds = this.timeCount % 60;
+      return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    },
   },
   mounted() {
     const script = document.createElement("script");
@@ -96,6 +130,7 @@ export default {
     document.head.appendChild(script);
   },
   methods: {
+    //이메일 인증코드 발송
     async sendAuthCode() {
       console.log("check valid email : ", this.userInfo.email);
 
@@ -110,11 +145,34 @@ export default {
             alert("인증번호가 전송되었습니다 메일을 확인해주세요");
             this.showAuthInput = true;
             this.showAuthCode = false;
+            this.startTimer();
           });
       } catch (error) {
         console.error(error);
       }
     },
+
+    //타이머 시작
+    startTimer() {
+      this.timeCount = 120; // 인증번호 유효 2분 설정
+      this.timer = setInterval(() => {
+        if (this.timeCount > 0) {
+          this.timeCount--;
+        } else {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+      }, 1000);
+    },
+    //타이머 종료
+    stopTimer() {
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+    },
+
+    //인증번호 확인
     async checkAuthCode() {
       console.log(this.userInfo.authNumber);
       try {
@@ -130,13 +188,18 @@ export default {
             alert(res.data);
             this.authErrorMessage = "";
             this.showAuthInput = false;
+            this.showAuthCode = false;
             this.isEmailReadOnly = true;
+            this.validCode = true;
+            this.stopTimer();
           });
       } catch (error) {
         console.error(error);
         this.authErrorMessage = error.response.data;
       }
     },
+
+    //이메일 중복 확인
     async checkDuplicateEmail() {
       console.log("check email", this.userInfo.email);
       try {
@@ -161,26 +224,33 @@ export default {
         }
       }
     },
+
+    //최종 회원가입 등록
     async registerUser() {
-      try {
-        await axios
-          .post(
-            "http://localhost:8081/user/register",
-            qs.stringify(this.userInfo)
-          )
-          .then((response) => {
-            console.log(response);
-            this.errorMessage = "";
-            alert("회원가입이 성공적으로 완료되었습니다");
-            location.href = "/login";
-          });
-      } catch (error) {
-        console.error(error.response);
-        if (error.status === 400) {
-          this.errorMessage = error.response.data;
+      if (this.checkValidBirthdate() && this.checkValidCode) {
+        try {
+          await axios
+            .post("http://localhost:8081/user/register", this.userInfo, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+            .then((response) => {
+              console.log(response);
+              this.errorMessage = "";
+              alert("회원가입이 성공적으로 완료되었습니다");
+              location.href = "/login";
+            });
+        } catch (error) {
+          console.error(error.response);
+          if (error.status === 400) {
+            this.errorMessage = error.response.data;
+          }
         }
       }
     },
+
+    //로그인 상태 여부 확인
     checkLogin() {
       axios
         .get("http://localhost:8081/user/status")
@@ -195,8 +265,29 @@ export default {
           }
         });
     },
+
+    //메인화면으로 이동
     goToMain() {
       this.$router.push({ name: "Main" });
+    },
+
+    //생년월일 유효성 검사
+    checkValidBirthdate() {
+      if (!this.userInfo.birthdate) {
+        this.errorMessage = "생년월일을 필수항목입니다";
+      } else {
+        this.errorMessage = "";
+      }
+      return this.errorMessage.length === 0;
+    },
+
+    checkValidCode() {
+      if (!this.validCode) {
+        this.errorMessage = "올바른 이메일 인증코드를 입력하세요";
+      } else {
+        this.errorMessage = "";
+      }
+      return this.errorMessage.length === 0;
     },
     execDaumPostcode() {
       if (this.isPostCodeLoaded && window.daum && window.daum.Postcode) {

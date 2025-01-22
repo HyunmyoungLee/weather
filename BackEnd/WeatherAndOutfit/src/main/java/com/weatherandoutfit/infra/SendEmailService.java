@@ -42,9 +42,9 @@ public class SendEmailService {
 	public String setEmail(String email) {
 		createAuthNumber();
 		String receiver = email;
-		String title = "회원가입을 위한 인증번호 메일입니다";
+		String title = "Weather & Outfit에서 보내는 인증번호 메일입니다";
 		String body ="<html><body>"+ 
-								"Weather & Outfit 회원가입 절차" +
+								"Weather & Outfit" +
 								"<br><br><br>" +
 								"인증 번호 <br>" + 
 								"<h2>" + authNumber + "</h2><br>"
