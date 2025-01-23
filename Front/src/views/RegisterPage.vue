@@ -107,6 +107,11 @@ export default {
   },
   created() {
     this.checkLogin();
+    if (this.$route.query.email) {
+      this.userInfo.email = this.$route.query.email;
+      this.isEmailReadOnly = true;
+      this.validCode = true;
+    }
   },
   computed: {
     formatTime() {

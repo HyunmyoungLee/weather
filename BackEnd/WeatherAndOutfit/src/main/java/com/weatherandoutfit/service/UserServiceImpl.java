@@ -53,4 +53,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.updatePwd(updateDTO);
 	}
 
+	public UserDTO getInfoByKakao(String email) {
+		return userDao.getInfoByKakao(email);
+	}
+
 }

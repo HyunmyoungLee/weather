@@ -52,8 +52,27 @@ export default {
       outfitPart: false,
     };
   },
+  created() {
+    this.checkLogin();
+  },
 
   methods: {
+    checkLogin() {
+      axios
+        .get("http://localhost:8081/user/status")
+        .then((response) => {
+          if (response.data.name != null) {
+            console.log(response.data);
+          } else {
+            console.log("오류");
+          }
+        })
+        .catch((err) => {
+          if (err.status == 401) {
+            console.log("로그인 정보가 없습니다");
+          }
+        });
+    },
     async fetchWeather(city) {
       await axios
         .get("http://localhost:8081/api/weather/city", {

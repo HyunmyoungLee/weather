@@ -60,5 +60,8 @@ public class UserDAOImpl implements UserDAO{
 		int result = ses.update(NS+"updatePwd", updateDTO);
 		return result;
 	}
-	
+
+	public UserDTO getInfoByKakao(String email) {
+		return ses.selectOne(NS+"getInfoByKakao", email);
+	}
 }

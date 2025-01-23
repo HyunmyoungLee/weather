@@ -1,6 +1,5 @@
 package com.weatherandoutfit.controller;
 
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;

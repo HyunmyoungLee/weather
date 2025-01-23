@@ -3,14 +3,14 @@
     <div class="input-group input-group-sm mb-3">
       <div class="input-wrapper">
         <img
-          v-if="isLoginSuccess == null"
+          v-if="isLoginSuccess == null || !kakaoLogin"
           src="../images/login.png"
           alt=""
           class="loginImage"
           @click="enterLoginPage"
         />
         <img
-          v-if="isLoginSuccess != null"
+          v-if="isLoginSuccess != null || kakaoLogin"
           src="../images/user.png"
           alt=""
           class="userImage"
@@ -70,6 +70,7 @@ export default {
       filteredCities: [],
       showSearch: false,
       showSearchImg: true,
+      kakaoLogin: false,
     };
   },
   computed: {
