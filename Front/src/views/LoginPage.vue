@@ -35,11 +35,7 @@
       </ul>
     </div>
     <div id="socialLogin">
-      <a
-        id="kakao"
-        href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=dc076dca00ca3b8af8476dea8f16bd60&redirect_uri=http://localhost:8081/user/socialLogin"
-        ><span>카카오 로그인</span></a
-      >
+      <a id="kakao"><button @click="socialLogin">카카오 로그인</button></a>
     </div>
   </div>
 </template>
@@ -98,12 +94,19 @@ export default {
         );
         if (response.status === 200) {
           console.log(response.data);
-          this.updateLoginSuccess(response.data.loginSuccess);
+          // this.updateLoginSuccess(response.data.loginSuccess);
           this.isLoading = true;
           this.$router.push({ name: "Main" });
         }
       } catch (error) {
         this.loginErrorMessage = error.response.data;
+      }
+    },
+    async socialLogin() {
+      try {
+        window.location.href = "http://localhost:8081/user/socialLogin";
+      } catch (error) {
+        console.error(error);
       }
     },
     goToMain() {

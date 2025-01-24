@@ -3,19 +3,21 @@
     <div class="input-group input-group-sm mb-3">
       <div class="input-wrapper">
         <img
-          v-if="isLoginSuccess == null || !kakaoLogin"
+          v-if="isLoginSuccess == null"
           src="../images/login.png"
           alt=""
           class="loginImage"
           @click="enterLoginPage"
         />
+
         <img
-          v-if="isLoginSuccess != null || kakaoLogin"
+          v-if="isLoginSuccess != null"
           src="../images/user.png"
           alt=""
           class="userImage"
         />
         <p class="input-title">Weather & Outfit</p>
+        <p v-if="isLoginSuccess != null">{{ isLoginSuccess }}</p>
         <img
           v-if="showSearchImg"
           src="../images/search.png"
@@ -70,7 +72,6 @@ export default {
       filteredCities: [],
       showSearch: false,
       showSearchImg: true,
-      kakaoLogin: false,
     };
   },
   computed: {
