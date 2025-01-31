@@ -47,6 +47,23 @@ public class RegisterValidator {
 		}
 	}
 	
+	private String validateGender(String gender) {
+		if(gender == "" || gender == null) {
+			return "성별은 필수 항목입니다";
+		} else {
+			return SUCCESS;
+		}
+	}
+	
+	private String validateAddress(String address) {
+		if(address == "" || address == null) {
+			return "주소는 필수 항목입니다";
+		} else { 
+			return SUCCESS;
+		}
+	}
+	
+	
 	public String batchValidate(UserDTO user) {
 		String errorMsg = "success";
 		errorMsg = validateEmail(user.getEmail());
@@ -54,6 +71,10 @@ public class RegisterValidator {
 		errorMsg = validatePassword(user.getPassword());
 		if(errorMsg != SUCCESS) return errorMsg;
 		errorMsg = validateName(user.getName());
+		if(errorMsg != SUCCESS) return errorMsg;
+		errorMsg = validateGender(user.getGender());
+		if(errorMsg != SUCCESS) return errorMsg;
+		errorMsg = validateAddress(user.getAddress());
 		if(errorMsg != SUCCESS) return errorMsg;
 		
 		return errorMsg;

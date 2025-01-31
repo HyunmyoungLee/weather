@@ -83,8 +83,13 @@ public class UserController {
 	}
 	
 	@PostMapping(value="/logout", produces = "application/json;charset=UTF-8")
-	public ResponseEntity<Object> userLogout(HttpSession session){
+	public ResponseEntity<Object> userLogout(HttpSession session, HttpServletResponse response){
+		Cookie cookie = new Cookie("JSESSIONID", null);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 		session.invalidate();
+		
 		return ResponseEntity.ok("로그아웃 완료");
 	}
 	

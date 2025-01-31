@@ -4,6 +4,7 @@ import loginPage from "@/views/LoginPage.vue";
 import registerPage from "@/views/RegisterPage.vue";
 import forgetIdPage from "@/views/ForgetId.vue";
 import forgetPwdPage from "@/views/ForgetPwd.vue";
+import myPage from "@/views/MyPage.vue";
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: "/pwdInquiry",
     name: "PwdInquiry",
     component: forgetPwdPage,
+  },
+  {
+    path: "/mypage",
+    name: "MyPage",
+    component: myPage,
   },
 ];
 

@@ -3,7 +3,7 @@
 <mapper namespace="com.weatherandoutfit.mappers.userMapper">
 	<insert id="registUser">
 		INSERT INTO USER
-		VALUES(#{email}, SHA2(#{password}, 256), #{name},#{birthdate}, #{address})
+		VALUES(#{email}, SHA2(#{password}, 256), #{name},#{birthdate}, #{gender}, #{address})
 	</insert>
 	
 	<select id="login" resultType="com.weatherandoutfit.domain.UserDTO">

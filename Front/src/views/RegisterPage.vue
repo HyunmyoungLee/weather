@@ -60,6 +60,11 @@
         :max="maxDate"
       />
       <br />
+      <select id="gender" v-model="userInfo.gender">
+        <option value="">성별</option>
+        <option value="male">남성</option>
+        <option value="femaie">여성</option>
+      </select>
       <input type="text" id="postcode" placeholder="우편번호" />
       <br />
       <input type="button" @click="execDaumPostcode()" value="우편번호 찾기" />
@@ -99,6 +104,7 @@ export default {
         email: "",
         password: "",
         name: "",
+        gender: "",
         address: "",
         authNumber: "",
         birthdate: "",
@@ -232,6 +238,8 @@ export default {
 
     //최종 회원가입 등록
     async registerUser() {
+      console.log("유저 주소지 : ", this.userInfo.address);
+
       if (this.checkValidBirthdate() && this.checkValidCode) {
         try {
           await axios
@@ -298,7 +306,7 @@ export default {
       if (this.isPostCodeLoaded && window.daum && window.daum.Postcode) {
         // eslint-disable-next-line no-undef
         new daum.Postcode({
-          oncomplete: function (data) {
+          oncomplete: (data) => {
             // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
 
             // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
@@ -326,6 +334,7 @@ export default {
             // 우편번호와 주소 정보를 해당 필드에 넣는다.
             document.getElementById("postcode").value = data.zonecode;
             document.getElementById("roadAddress").value = roadAddr;
+            this.userInfo.address = roadAddr;
           },
         }).open();
       } else {
@@ -366,7 +375,8 @@ export default {
   margin: 0 auto;
 }
 
-#register_box input {
+#register_box input,
+select {
   width: 100%;
   height: 50px;
   padding: 15px 10px 14px;

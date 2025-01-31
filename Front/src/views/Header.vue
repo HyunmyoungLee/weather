@@ -15,6 +15,7 @@
           src="../images/user.png"
           alt=""
           class="userImage"
+          @click="enterMyPage"
         />
         <p class="input-title">Weather & Outfit</p>
         <p v-if="isLoginSuccess != null">{{ isLoginSuccess }}</p>
@@ -86,6 +87,9 @@ export default {
   methods: {
     enterLoginPage() {
       this.$router.push({ name: "Login" });
+    },
+    enterMyPage() {
+      this.$router.push({ name: "MyPage" });
     },
 
     filterCities() {

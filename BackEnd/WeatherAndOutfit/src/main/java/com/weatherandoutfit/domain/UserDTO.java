@@ -20,5 +20,6 @@ public class UserDTO {
 	private String password;
 	private String name;
 	private LocalDate birthdate;
+	private String gender;
 	private String address;
 }
