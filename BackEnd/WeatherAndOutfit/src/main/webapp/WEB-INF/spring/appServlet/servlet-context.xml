@@ -20,6 +20,13 @@
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
+	 <beans:bean id="multipartResolver"
+    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+      <!-- 최대 요청 크기 설정 (전체 요청 크기 20MB) -->	  
+    <beans:property name="maxUploadSize" value="20971520"/>
+    <!-- 최대 업로드 가능한 파일 크기 설정 (10MB) -->
+    <beans:property name="maxUploadSizePerFile" value="10485760"/>
+    </beans:bean>
 	
 	<context:component-scan base-package="com.weatherandoutfit" />
 	

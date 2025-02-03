@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
+import com.weatherandoutfit.domain.UserProfileDTO;
 import com.weatherandoutfit.domain.CheckIdDTO;
 import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
@@ -63,5 +64,13 @@ public class UserDAOImpl implements UserDAO{
 
 	public UserDTO getInfoByKakao(String email) {
 		return ses.selectOne(NS+"getInfoByKakao", email);
+	}
+
+	public int addProfile(UserProfileDTO profile, String email) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("nickName", profile.getNickName());
+		args.put("imageUrl", profile.getProfileImageUrl());
+		args.put("email", email);
+		return ses.insert(NS+"addProfile", profile);
 	}
 }

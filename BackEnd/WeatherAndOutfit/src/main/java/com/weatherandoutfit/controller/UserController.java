@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,11 +29,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
+import com.weatherandoutfit.domain.UserProfileDTO;
 import com.weatherandoutfit.domain.CheckIdDTO;
 import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
@@ -199,5 +203,19 @@ public class UserController {
 		redirectHeader.setLocation(URI.create("http://localhost:8080/register?email=" + (String)responseUserInfo.get("kakao_account").get("email")));
 		return ResponseEntity.status(HttpStatus.FOUND).headers(redirectHeader).build();
 	}
+	}
+	
+	@PostMapping(value = "/addProfile", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> addProfile(@RequestPart("userProfile") UserProfileDTO profile, @RequestPart(value = "file", required = false) MultipartFile file, HttpSession session){
+//		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		int result = 0;
+//		String email = userSession.getEmail();
+		String email = "hyun_myoung@hanmail.net";
+		log.info(email);
+		if(file == null) {
+			file = new MockMultipartFile("file", new byte[0]);
+		}
+		result = service.addProfile(profile,file,email);
+		return ResponseEntity.ok(result == 1 ? "유저 프로필 등록 완료" : "유저 프로필 등록 실패");
 	}
 }
