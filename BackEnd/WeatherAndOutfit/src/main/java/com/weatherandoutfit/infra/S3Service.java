@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,25 +20,28 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
-@NoArgsConstructor
 @Slf4j
-@PropertySource("classpath:amazon.properties")
 @Service
 public class S3Service {
+
+	@Value("${accesskey}")
+	private String accesskey;
+	@Value("${secretkey}")
+	private String secretKey;
 	
+	@Autowired
 	private  AmazonS3 amazonS3;
-	@Value("${s3.bucket}")
-	private String bucketName;
+	private  final String bucketName = "weatherandoutfit";
 	
 	
 	
 	//이미지 파일 업로드
 	public String uploadFile(MultipartFile file) throws IOException {
-		String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+		String fileName = "userProfile/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
 		
 		File convertedFile = convertFile(file);
 		log.info("{},{}", fileName, convertedFile);
-		log.info("{}", bucketName);
+		log.info(" accesskey : {}, secretKey : {}",accesskey, secretKey);
 		amazonS3.putObject(new PutObjectRequest(bucketName, fileName, convertedFile)
 				.withCannedAcl(CannedAccessControlList.PublicRead));
 		

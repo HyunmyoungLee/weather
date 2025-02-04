@@ -32,9 +32,9 @@
 		SET password = SHA2(#{password},256)
 		WHERE email = #{email}
 	</update>
-	<insert id="addProfile">
-		INSERT INTO USER (nickName, imageUrl)
-		VALUES(#{nickName}, #{imageUrl})
+	<update id="addProfile">
+		UPDATE user
+		SET nickName = #{nickName}, imageUrl = #{profileImageUrl}
 		WHERE email = #{email}
-	</insert>
+	</update>
 </mapper>

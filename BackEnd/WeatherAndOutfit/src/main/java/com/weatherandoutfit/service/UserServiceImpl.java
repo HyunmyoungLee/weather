@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Inject
 	UserDAOImpl userDao;
+	
+	@Autowired
+	private S3Service s3Service;
 
 	@Override
 	public int registUser(UserDTO user) {
@@ -65,10 +68,9 @@ public class UserServiceImpl implements UserService {
 		String imageUrl = null;
 		try {
 			if(!file.getOriginalFilename().isEmpty()) {
-				S3Service s3Service = new S3Service();
 				imageUrl  = s3Service.uploadFile(file);
 			} else {
-				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/UserProfile/user.png";
+				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/userProfile/user.png";
 			}
 		} catch (IOException e) {
 				// TODO Auto-generated catch block

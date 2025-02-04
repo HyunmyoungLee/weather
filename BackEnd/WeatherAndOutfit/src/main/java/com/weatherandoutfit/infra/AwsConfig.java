@@ -12,12 +12,14 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
-@PropertySource("classpath:amazon.properties")
+@Slf4j
 public class AwsConfig {
-	@Value("${s3.accesskey}")
+	@Value("${accesskey}")
 	private String accesskey;
-	@Value("${s3.secretkey}")
+	@Value("${secretkey}")
 	private String secretKey;
 	
 	@Bean

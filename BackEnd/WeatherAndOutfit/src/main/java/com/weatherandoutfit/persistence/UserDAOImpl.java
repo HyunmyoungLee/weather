@@ -69,8 +69,8 @@ public class UserDAOImpl implements UserDAO{
 	public int addProfile(UserProfileDTO profile, String email) {
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("nickName", profile.getNickName());
-		args.put("imageUrl", profile.getProfileImageUrl());
+		args.put("profileImageUrl", profile.getProfileImageUrl());
 		args.put("email", email);
-		return ses.insert(NS+"addProfile", profile);
+		return ses.update(NS+"addProfile", args);
 	}
 }
