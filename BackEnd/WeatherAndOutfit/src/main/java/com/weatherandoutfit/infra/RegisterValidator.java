@@ -63,6 +63,19 @@ public class RegisterValidator {
 		}
 	}
 	
+	//닉네임 형식
+	public String validateNickname(String nickname) {
+		if(nickname != null) {
+	        String regexp = "^(?!.*[.]{2})[a-z0-9][a-z0-9._]{4,18}[a-z0-9]$";
+	        if(!Pattern.matches(regexp, nickname)) {
+	        	return "닉네임 형식이 올바르지 않습니다 (영소문자, 숫자, . , _ 한정 사용가능 6-20자 이내)";
+	        } 
+	        return SUCCESS;
+		} else {
+			return "닉네임은 필수 항목입니다";
+		}
+	}
+	
 	
 	public String batchValidate(UserDTO user) {
 		String errorMsg = "success";
@@ -79,4 +92,5 @@ public class RegisterValidator {
 		
 		return errorMsg;
 	}
+	
 }

@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weatherandoutfit.mappers.userMapper">
+	<select id="getUserInfo" resultType="com.weatherandoutfit.domain.UserVO">
+		SELECT * FROM USER
+		WHERE EMAIL = #{email}
+	</select>
+
 	<insert id="registUser">
-		INSERT INTO USER
+		INSERT INTO USER (email, password, name, birthdate, gender, address)
 		VALUES(#{email}, SHA2(#{password}, 256), #{name},#{birthdate}, #{gender}, #{address})
 	</insert>
 	
@@ -25,6 +30,11 @@
 	<select id="getEmailList" resultType="String">
 		SELECT EMAIL FROM USER
 		WHERE NAME = #{name} and BIRTHDATE = #{birthdate}
+	</select>
+	<select id="getNickname" resultType="com.weatherandoutfit.domain.UserVO">
+		SELECT * 
+		FROM USER
+		WHERE nickname = #{nickname}
 	</select>
 	
 	<update id="updatePwd">

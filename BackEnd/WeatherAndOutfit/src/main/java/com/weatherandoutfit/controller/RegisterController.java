@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.weatherandoutfit.domain.EmailAuthDTO;
 import com.weatherandoutfit.domain.EmailDTO;
 import com.weatherandoutfit.domain.UserDTO;
+import com.weatherandoutfit.domain.UserVO;
 import com.weatherandoutfit.infra.RegisterValidator;
 import com.weatherandoutfit.infra.SendEmailService;
 import com.weatherandoutfit.infra.ValidationException;
@@ -89,6 +90,16 @@ public class RegisterController {
 		return ResponseEntity.ok(registUser > 0 ? "register Success" : "");
 	}
 	
-	
+	@GetMapping(value="/checkNickname", produces="application/json;charset=UTF-8")
+	public ResponseEntity<Object> checkNickname(@RequestParam String nickname){
+		RegisterValidator validator = new RegisterValidator();
+		String checkNicknameValidation = validator.validateNickname(nickname);
+		if(checkNicknameValidation.equals("success")) {
+			UserVO getNickname = service.getNickname(nickname);
+			return ResponseEntity.ok(getNickname);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(checkNicknameValidation);
+		}
+	}
 	
 }

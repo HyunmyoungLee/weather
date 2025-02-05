@@ -37,6 +37,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
 import com.weatherandoutfit.domain.UserProfileDTO;
+import com.weatherandoutfit.domain.UserVO;
 import com.weatherandoutfit.domain.CheckIdDTO;
 import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
@@ -77,6 +78,14 @@ public class UserController {
 				log.info("Cookie Name: {}", cookie.getName());
 				log.info("Cookie Value: {}", cookie.getValue());
 				log.info("Cookie Path: {}", cookie.getPath());
+				
+				String userEmail = loginInfo.getEmail();
+				UserVO userInfo = service.getUserInfo(userEmail);
+				if(userInfo.getNickname() == null || userInfo.getImageUrl() == null) {
+					loginResponse.put("redirectUrl", "/initProfile");
+				} else {
+					loginResponse.put("redirectUrl", "/");
+				}
 				
 				return ResponseEntity.ok(loginResponse);
 			} else {
@@ -192,12 +201,18 @@ public class UserController {
 		return ResponseEntity.badRequest().body("카카오 정보 조회 실패");
 	}
 	UserDTO userInfoByKakao = service.getInfoByKakao((String)responseUserInfo.get("kakao_account").get("email"));
+	String email = userInfoByKakao.getEmail();
+	UserVO userAllInfo = service.getUserInfo(email);
 	HttpHeaders redirectHeader = new HttpHeaders();
 	if(userInfoByKakao != null) {
 		Map<String, String> user = new HashMap<String, String>();
 		user.put("loginSuccess", userInfoByKakao.getName());
 		session.setAttribute("user", userInfoByKakao);
-		redirectHeader.setLocation(URI.create("http://localhost:8080"));
+		if(userAllInfo.getNickname() == null || userAllInfo.getImageUrl() == null) {
+			redirectHeader.setLocation(URI.create("http://localhost:8080/initProfile"));
+		} else {			
+			redirectHeader.setLocation(URI.create("http://localhost:8080"));
+		}
 		return ResponseEntity.status(HttpStatus.FOUND).headers(redirectHeader).build();
 	} else {
 		redirectHeader.setLocation(URI.create("http://localhost:8080/register?email=" + (String)responseUserInfo.get("kakao_account").get("email")));
@@ -207,15 +222,26 @@ public class UserController {
 	
 	@PostMapping(value = "/addProfile", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> addProfile(@RequestPart("userProfile") UserProfileDTO profile, @RequestPart(value = "file", required = false) MultipartFile file, HttpSession session){
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		log.info("{},{}", profile, file);
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
 		int result = 0;
-//		String email = userSession.getEmail();
-		String email = "hyun_myoung@hanmail.net";
+		String email = userSession.getEmail();
 		log.info(email);
 		if(file == null) {
 			file = new MockMultipartFile("file", new byte[0]);
 		}
 		result = service.addProfile(profile,file,email);
 		return ResponseEntity.ok(result == 1 ? "유저 프로필 등록 완료" : "유저 프로필 등록 실패");
+	}
+	
+	@GetMapping(value="/info", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> getUserInfo(HttpSession session){
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		if(userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+		String email = userSession.getEmail();
+		UserVO user = service.getUserInfo(email);
+		return ResponseEntity.ok(user);
 	}
 }

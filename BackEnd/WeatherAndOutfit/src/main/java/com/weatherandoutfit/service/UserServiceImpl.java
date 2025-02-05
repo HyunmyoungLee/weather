@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
 import com.weatherandoutfit.domain.UserProfileDTO;
+import com.weatherandoutfit.domain.UserVO;
 import com.weatherandoutfit.domain.CheckIdDTO;
 import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
@@ -73,12 +74,19 @@ public class UserServiceImpl implements UserService {
 				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/userProfile/user.png";
 			}
 		} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 		}
 		profile.setProfileImageUrl(imageUrl);
 		
 		return userDao.addProfile(profile, email);
+	}
+
+	public UserVO getNickname(String nickname) {
+		return userDao.getNickname(nickname);
+	}
+
+	public UserVO getUserInfo(String email) {
+		return userDao.getUserInfo(email);
 	}
 
 }

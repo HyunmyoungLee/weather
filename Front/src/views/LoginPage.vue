@@ -94,9 +94,9 @@ export default {
         );
         if (response.status === 200) {
           console.log(response.data);
-          // this.updateLoginSuccess(response.data.loginSuccess);
           this.isLoading = true;
-          this.$router.push({ name: "Main" });
+          const redirectUrl = response.data.redirectUrl;
+          this.$router.push(redirectUrl);
         }
       } catch (error) {
         this.loginErrorMessage = error.response.data;

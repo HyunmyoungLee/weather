@@ -5,6 +5,8 @@ import registerPage from "@/views/RegisterPage.vue";
 import forgetIdPage from "@/views/ForgetId.vue";
 import forgetPwdPage from "@/views/ForgetPwd.vue";
 import myPage from "@/views/MyPage.vue";
+import initProfile from "@/views/InitProfile.vue";
+import store from "@/store";
 
 const routes = [
   {
@@ -37,11 +39,27 @@ const routes = [
     name: "MyPage",
     component: myPage,
   },
+  {
+    path: "/initProfile",
+    name: "InitProfile",
+    component: initProfile,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const isLoggedIn = store.getters.isAuthenticated;
+  const hasProfile = store.getters.hasProfile;
+
+  if (isLoggedIn && !hasProfile && to.path !== "/initProfile") {
+    next("/initProfile");
+  } else {
+    next();
+  }
 });
 
 export default router;

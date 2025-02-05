@@ -1,6 +1,6 @@
 package com.weatherandoutfit.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +15,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class UserProfileDTO {
-	@JsonProperty("nickName")
-	private String nickName;
-	private String profileImageUrl;
+public class UserVO {
+	private String email;	
+	private String password;
+	private String name;
+	private LocalDate birthdate;
+	private String gender;
+	private String address;
+	private String nickname;
+	private String imageUrl;
 }

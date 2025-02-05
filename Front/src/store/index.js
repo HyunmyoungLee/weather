@@ -1,12 +1,19 @@
 import { createStore } from "vuex";
 import axios from "axios";
+import router from "@/router";
+
 export default createStore({
   state: {
     loginSuccess: null,
+    user: null,
+    nickname: null,
   },
   mutations: {
     setLoginSuccess(state, value) {
       state.loginSuccess = value;
+    },
+    setProfile(state, userInfo) {
+      (state.user = userInfo), (state.nickname = userInfo.nickname);
     },
   },
   actions: {
@@ -29,29 +36,23 @@ export default createStore({
         .catch((err) => {
           console.error(err);
         });
-      // const loginStatus = localStorage.getItem("loginSuccess");
-      // const cookie = getCookie("JSESSIONID");
-      // if (cookie) {
-      //   commit("setLoginSuccess", loginStatus);
-      // } else {
-      //   commit("setLoginSuccess", null);
-      // }
+    },
+    async fetchUser({ commit }) {
+      try {
+        await axios.get("http://localhost:8081/user/info").then((res) => {
+          console.log(res);
+          commit("setProfile", res.data);
+        });
+      } catch (err) {
+        alert("로그인 정보가 없습니다");
+        console.error("유저 정보 로딩 실패", err);
+        router.push({ name: "Main" });
+      }
     },
   },
   getters: {
     isLoginSuccess: (state) => state.loginSuccess,
+    isAuthenticated: (state) => !!state.user,
+    hasProfile: (state) => state.nickname,
   },
 });
-
-// function getCookie(cookieName) {
-//   const name = `${cookieName}=`;
-//   const decodedCookie = decodeURIComponent(document.cookie);
-//   const cookies = decodedCookie.split(";");
-
-//   for (let i = 0; i < cookies.length; i++) {
-//     let cookie = cookies[i];
-//     while (cookie.charAt(0) === " ") cookie = cookie.substring(1);
-//     if (cookie.indexOf(name) === 0) return true;
-//   }
-//   return false;
-// }

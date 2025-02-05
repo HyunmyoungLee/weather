@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
 import com.weatherandoutfit.domain.UserProfileDTO;
+import com.weatherandoutfit.domain.UserVO;
 import com.weatherandoutfit.domain.CheckIdDTO;
 import com.weatherandoutfit.domain.UpdatePasswordDTO;
 import com.weatherandoutfit.domain.UserDTO;
@@ -72,5 +73,18 @@ public class UserDAOImpl implements UserDAO{
 		args.put("profileImageUrl", profile.getProfileImageUrl());
 		args.put("email", email);
 		return ses.update(NS+"addProfile", args);
+	}
+
+	public UserVO getNickname(String nickname) {
+		UserVO userInfo = ses.selectOne(NS+"getNickname", nickname);
+		if(userInfo != null) {
+			return userInfo;
+		} else {		
+			return new UserVO();
+		}
+	}
+
+	public UserVO getUserInfo(String email) {
+		return ses.selectOne(NS+"getUserInfo", email);
 	}
 }
