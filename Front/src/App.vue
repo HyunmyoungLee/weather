@@ -6,9 +6,20 @@
 </template>
 
 <script>
+import { onMounted } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "App",
   components: {},
+  async created() {
+    await this.$store.dispatch("initLoginStatus");
+  },
+  setup() {
+    const store = useStore();
+    onMounted(() => {
+      store.dispatch("restoreSession");
+    });
+  },
 };
 </script>
 

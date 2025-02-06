@@ -65,6 +65,10 @@ export default {
         await axios.post("http://localhost:8081/user/logout").then((res) => {
           console.log(res);
           this.$store.commit("setLoginSuccess", null);
+          this.$store.commit("setProfile", { nickname: null, imageUrl: null });
+          localStorage.removeItem("loginSuccess");
+          localStorage.removeItem("nickname");
+          localStorage.removeItem("imageUrl");
           alert("로그아웃 되었습니다.");
           this.$router.push({ name: "Main" });
         });

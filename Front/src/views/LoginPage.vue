@@ -53,6 +53,10 @@ export default {
       password: null,
       isLoading: false,
       loginErrorMessage: "",
+      userProfile: {
+        nickname: null,
+        imageUrl: null,
+      },
     };
   },
 
@@ -96,6 +100,10 @@ export default {
           console.log(response.data);
           this.isLoading = true;
           const redirectUrl = response.data.redirectUrl;
+          this.userProfile.nickname = response.data.nickname;
+          this.userProfile.imageUrl = response.data.imageUrl;
+          this.$store.commit("setLoginSuccess", response.data.loginSuccess);
+          this.$store.commit("setProfile", this.userProfile);
           this.$router.push(redirectUrl);
         }
       } catch (error) {

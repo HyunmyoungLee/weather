@@ -81,6 +81,8 @@ public class UserController {
 				
 				String userEmail = loginInfo.getEmail();
 				UserVO userInfo = service.getUserInfo(userEmail);
+				loginResponse.put("nickname", userInfo.getNickname());
+				loginResponse.put("imageUrl", userInfo.getImageUrl());
 				if(userInfo.getNickname() == null || userInfo.getImageUrl() == null) {
 					loginResponse.put("redirectUrl", "/initProfile");
 				} else {
@@ -224,14 +226,19 @@ public class UserController {
 	public ResponseEntity<Object> addProfile(@RequestPart("userProfile") UserProfileDTO profile, @RequestPart(value = "file", required = false) MultipartFile file, HttpSession session){
 		log.info("{},{}", profile, file);
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
-		int result = 0;
 		String email = userSession.getEmail();
 		log.info(email);
 		if(file == null) {
 			file = new MockMultipartFile("file", new byte[0]);
 		}
-		result = service.addProfile(profile,file,email);
-		return ResponseEntity.ok(result == 1 ? "유저 프로필 등록 완료" : "유저 프로필 등록 실패");
+		UserVO userInfo = service.addProfile(profile,file,email);
+		
+		if(userInfo.getNickname() != null || userInfo.getNickname() != null) {
+			return ResponseEntity.ok(userInfo);
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 프로필 등록 실패");
+		}
+		
 	}
 	
 	@GetMapping(value="/info", produces = "application/json;charset=UTF-8")

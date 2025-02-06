@@ -3,7 +3,7 @@
     <div class="input-group input-group-sm mb-3">
       <div class="input-wrapper">
         <img
-          v-if="isLoginSuccess == null"
+          v-if="!isLoginSuccess"
           src="../images/login.png"
           alt=""
           class="loginImage"
@@ -11,7 +11,7 @@
         />
 
         <img
-          v-if="isLoginSuccess != null"
+          v-if="isLoginSuccess"
           src="../images/user.png"
           alt=""
           class="userImage"

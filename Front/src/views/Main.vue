@@ -54,6 +54,11 @@ export default {
   },
   created() {
     this.checkLogin();
+    console.log(
+      "현재 프로필 상태",
+      this.$store.state.nickname,
+      this.$store.state.imageUrl
+    );
   },
 
   methods: {

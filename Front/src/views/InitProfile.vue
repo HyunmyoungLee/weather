@@ -67,6 +67,11 @@ export default {
 
   created() {
     this.checkLogin();
+    console.log(
+      "현재 프로필 상태",
+      this.$store.state.nickname,
+      this.$store.state.imageUrl
+    );
   },
   computed: {},
   methods: {
@@ -151,6 +156,10 @@ export default {
         .then((res) => {
           console.log(res);
           alert("프로필 등록이 완료되었습니다");
+          this.$store.commit("setProfile", {
+            nickname: res.data.nickname,
+            imageUrl: res.data.imageUrl,
+          });
           this.$router.push({ name: "Main" });
           this.file = null;
         })

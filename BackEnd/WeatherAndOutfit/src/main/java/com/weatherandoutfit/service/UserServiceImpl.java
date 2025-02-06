@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.getInfoByKakao(email);
 	}
 
-	public int addProfile(UserProfileDTO profile, MultipartFile file, String email) {
+	public UserVO addProfile(UserProfileDTO profile, MultipartFile file, String email) {
 		String imageUrl = null;
 		try {
 			if(!file.getOriginalFilename().isEmpty()) {
@@ -77,8 +77,14 @@ public class UserServiceImpl implements UserService {
 				e.printStackTrace();
 		}
 		profile.setProfileImageUrl(imageUrl);
+		int result = userDao.addProfile(profile, email);
+		if(result == 1) {
+			UserVO userInfo = userDao.getUserInfo(email);
+			return userInfo;
+		} else {
+			return new UserVO();
+		}
 		
-		return userDao.addProfile(profile, email);
 	}
 
 	public UserVO getNickname(String nickname) {
