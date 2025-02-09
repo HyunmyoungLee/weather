@@ -49,7 +49,6 @@
 <script>
 import axios from "axios";
 axios.defaults.withCredentials = true;
-import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -83,7 +82,6 @@ export default {
         }
       });
     },
-    ...mapActions(["fetchUser"]),
     async checkValidateNickname() {
       await axios
         .get("http://localhost:8081/user/checkNickname", {

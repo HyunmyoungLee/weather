@@ -42,10 +42,6 @@ export default createStore({
         commit("setProfile", { nickname, imageUrl });
       }
     },
-    updateLoginSuccess({ commit }, value) {
-      commit("setLoginSuccess", value);
-      localStorage.setItem("loginSuccess", value);
-    },
     async initLoginStatus({ commit }) {
       await axios
         .get("http://localhost:8081/user/info", {
@@ -74,18 +70,6 @@ export default createStore({
           localStorage.removeItem("imageUrl");
           router.push({ name: "Login" });
         });
-    },
-    async fetchUser({ commit }) {
-      try {
-        await axios.get("http://localhost:8081/user/info").then((res) => {
-          console.log(res);
-          commit("setProfile", res.data);
-        });
-      } catch (err) {
-        alert("로그인 정보가 없습니다");
-        console.error("유저 정보 로딩 실패", err);
-        router.push({ name: "Main" });
-      }
     },
   },
   getters: {

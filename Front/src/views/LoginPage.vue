@@ -42,7 +42,6 @@
 
 <script>
 import axios from "axios";
-import { mapActions } from "vuex";
 axios.defaults.withCredentials = true;
 
 export default {
@@ -86,7 +85,6 @@ export default {
           }, 500);
         });
     },
-    ...mapActions(["updateLoginSuccess"]),
     async login() {
       console.log(this.email, this.password);
 
