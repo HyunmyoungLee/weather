@@ -25,9 +25,7 @@
       <p id="loginError" v-if="loginErrorMessage">{{ loginErrorMessage }}</p>
       <br />
       <span class="submit"><button @click.prevent="login">로그인</button></span>
-      <label class="checkbox">
-        <input type="checkbox" name="autoLogin" id="autoLogin" /> 자동 로그인
-      </label>
+
       <ul id="sub_menu">
         <li><a @click="goToRegister">회원 가입</a></li>
         <li><a @click="goToIdInquiry">아이디 찾기</a></li>
@@ -193,12 +191,6 @@ a {
 #loginError {
   color: red;
 }
-.checkbox {
-  display: inline-block;
-  font-size: 14px;
-  color: #aaa;
-}
-
 .submit {
   display: block;
   margin: 10px 0 20px;

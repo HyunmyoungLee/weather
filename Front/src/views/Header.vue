@@ -12,13 +12,12 @@
 
         <img
           v-if="isLoginSuccess"
-          src="../images/user.png"
+          :src="imageUrl"
           alt=""
           class="userImage"
           @click="enterMyPage"
         />
         <p class="input-title">Weather & Outfit</p>
-        <p v-if="isLoginSuccess != null">{{ isLoginSuccess }}</p>
         <img
           v-if="showSearchImg"
           src="../images/search.png"
@@ -62,7 +61,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import cities from "../json/korean_cities.json";
 export default {
   name: "AppHeader",
@@ -77,6 +76,7 @@ export default {
   },
   computed: {
     ...mapGetters(["isLoginSuccess"]),
+    ...mapState(["imageUrl"]),
   },
   created() {
     this.$store.dispatch("initLoginStatus");
@@ -166,8 +166,7 @@ export default {
 
 .input-title {
   margin: 0;
-  font-size: 25px;
-  font-weight: bold;
+  font-size: 35px;
   text-align: center;
   position: absolute;
   left: 50%;

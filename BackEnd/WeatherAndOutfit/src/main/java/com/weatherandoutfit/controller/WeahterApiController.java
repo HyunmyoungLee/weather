@@ -1,8 +1,15 @@
 package com.weatherandoutfit.controller;
 
 
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,19 +32,30 @@ public class WeahterApiController {
 	private final static String URL  = "https://api.openweathermap.org/data/2.5/weather";
 	private final static String FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast";
 	
+
 	@GetMapping(value = "/coordinate")
 	public ResponseEntity<Object> getWeatherByCoordinates(@RequestParam double lat, @RequestParam double lon){
 		log.info("{}, {}" , lat, lon);
 		log.info("{}", apiKey);
 		
 		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAcceptCharset(Collections.singletonList(StandardCharsets.UTF_8));
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL)
 				.queryParam("lat", lat)
 				.queryParam("lon", lon)
+				.queryParam("lang", "ko")
 				.queryParam("appid",	apiKey)
 				.queryParam("units", "metric");
 		
-		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
+		
+		
+//		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
+		ResponseEntity<String> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,entity,String.class);
+		log.info("Request URL : {}", builder.toUriString() );
 		return ResponseEntity.ok(response.getBody());
 	}
 	
@@ -49,7 +67,8 @@ public class WeahterApiController {
 				.queryParam("lat", lat)
 				.queryParam("lon", lon)
 				.queryParam("appid", apiKey)
-				.queryParam("units", "metric");
+				.queryParam("units", "metric")
+				.queryParam("lang", "ko");
 		
 		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 		return ResponseEntity.ok(response.getBody());
@@ -61,7 +80,8 @@ public class WeahterApiController {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL)
 				.queryParam("q", city)
 				.queryParam("appid", apiKey)
-				.queryParam("units", "metric");
+				.queryParam("units", "metric")
+				.queryParam("lang", "ko");
 		
 		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 		return ResponseEntity.ok(response.getBody());
@@ -73,7 +93,8 @@ public class WeahterApiController {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(FORECAST_URL)
 				.queryParam("q", city)
 				.queryParam("appid", apiKey)
-				.queryParam("units", "metric");
+				.queryParam("units", "metric")
+				.queryParam("lang", "ko");
 		
 		ResponseEntity<String> response = restTemplate.getForEntity(builder.toUriString(), String.class);
 		return ResponseEntity.ok(response.getBody());

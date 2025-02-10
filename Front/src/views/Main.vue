@@ -31,14 +31,37 @@
         </li>
       </ul>
     </div>
-    <div v-if="outfitPart">
-      <h3>Trendy Outfit</h3>
+    <div id="outfit-part" v-if="outfitPart">
+      <h3>Outfit</h3>
+      <div id="location-part">
+        <ul
+          id="location-list"
+          ref="locationList"
+          @mousedown="startDrag"
+          @mouseleave="stopDrag"
+          @mouseup="stopDrag"
+          @mousemove="onDrag"
+        >
+          <li
+            v-for="(location, index) in locations"
+            :key="index"
+            @click="selectLocation(location)"
+            :class="{
+              active: selectedLocation === location || activeIndex === index,
+            }"
+          >
+            <a :class="{ active: activeIndex === index }">{{ location }}</a>
+          </li>
+        </ul>
+      </div>
+      <div id="category-part"></div>
     </div>
   </div>
 </template>
 <script>
 import Header from "./Header.vue";
 import axios from "axios";
+import { locations, locationMapping } from "@/js/location_mapping.js";
 
 export default {
   name: "AppMain",
@@ -47,9 +70,31 @@ export default {
   },
   data() {
     return {
+      lat: 0,
+      lon: 0,
       weatherInfo: null,
       forecastInfo: [],
       outfitPart: false,
+      isDown: false,
+      startX: 0,
+      scrollLeft: 0,
+      activeIndex: null,
+      locations,
+      selectedLocation: "",
+      locationMapping,
+      cataegory: [
+        "남성",
+        "여성",
+        "10대",
+        "20대",
+        "30대",
+        "40대",
+        "50대",
+        "60대 이상",
+        "오늘",
+        "최근 1주일",
+        "최근 한달",
+      ],
     };
   },
   created() {
@@ -64,7 +109,7 @@ export default {
   methods: {
     checkLogin() {
       axios
-        .get("http://localhost:8081/user/status")
+        .get("http://localhost:8081/user/status", {})
         .then((response) => {
           if (response.data.name != null) {
             console.log(response.data);
@@ -87,6 +132,9 @@ export default {
           console.log(res);
           this.weatherInfo = res.data;
           this.outfitPart = true;
+          this.lat = res.data.coord.lat;
+          this.lon = res.data.coord.lon;
+          this.setLocationByCoordinates();
         })
         .catch((err) => {
           console.error(err);
@@ -137,12 +185,14 @@ export default {
         const position = await new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject);
         });
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        alert(`위도 : ${lat}, 경도 : ${lon}`);
-        await this.fetchWeatherByCoordinates(lat, lon);
+        this.lat = position.coords.latitude;
+        this.lon = position.coords.longitude;
+        alert(`위도 : ${this.lat}, 경도 : ${this.lon}`);
+        this.setLocationByCoordinates();
+        await this.fetchWeatherByCoordinates(this.lat, this.lon);
       } catch (error) {
         console.error("위치를 가져오지 못했습니다", error);
+        this.fetchWeather({ name: "seoul" });
       }
     },
     async fetchWeatherByCoordinates(lat, lon) {
@@ -170,6 +220,49 @@ export default {
           console.error(err);
         });
     },
+    startDrag(e) {
+      this.isDown = true;
+      this.startX = e.pageX - this.$refs.locationList.offsetLeft;
+      this.scrollLeft = this.$refs.locationList.scrollLeft;
+    },
+    stopDrag() {
+      this.isDown = false;
+    },
+    onDrag(e) {
+      if (!this.isDown) return;
+      e.preventDefault();
+      const x = e.pageX - this.$refs.locationList.offsetLeft;
+      const walk = (x - this.startX) * 2;
+      this.$refs.locationList.scrollLeft = this.scrollLeft - walk;
+    },
+    setActive(index) {
+      this.activeIndex = index;
+    },
+    selectLocation(location) {
+      this.selectedLocation = location;
+      this.activeIndex = this.locations.indexOf(location);
+    },
+    setLocationByCoordinates() {
+      console.log(`user location : lat=${this.lat} lon = ${this.lon}`);
+      for (let location in this.locationMapping) {
+        const { latMin, latMax, lonMin, lonMax } =
+          this.locationMapping[location];
+        console.log(
+          `checking ${location} : lat(${latMin}-${latMax}), lon${lonMin}-${lonMax}`
+        );
+
+        if (
+          this.lat >= latMin &&
+          this.lat <= latMax &&
+          this.lon >= lonMin &&
+          this.lon <= lonMax
+        ) {
+          this.selectedLocation = location;
+          this.activeIndex = this.locations.indexOf(location);
+          break;
+        }
+      }
+    },
   },
   mounted() {
     this.getLocation();
@@ -178,6 +271,9 @@ export default {
 </script>
 
 <style scoped>
+ul {
+  list-style-type: none;
+}
 .currentWeatherInfo {
   background-color: white;
   margin: 20px 20px;
@@ -239,5 +335,43 @@ export default {
 
 ::-webkit-scrollbar-track {
   background: #f4f4f4;
+}
+
+#location-part {
+  margin-top: 10px;
+  background-color: rgb(235 235 235);
+}
+
+#location-list {
+  margin: 10px 0;
+  display: flex;
+  width: 100%;
+  height: 50px;
+  overflow-x: auto;
+  padding: 0 10px;
+  cursor: grab;
+}
+#location-list:active {
+  cursor: grabbing;
+}
+
+#location-list > li {
+  flex: 0 0 auto;
+  margin-right: 10px;
+}
+
+#location-list > li > a {
+  color: #aaa;
+  font-size: 16px;
+  text-decoration: none;
+  transition: font-weight 0.2s ease-in-out;
+}
+#location-list > li > a.active {
+  font-weight: bold;
+  color: #333;
+}
+
+#location-list::-webkit-scrollbar {
+  display: none;
 }
 </style>
