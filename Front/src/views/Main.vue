@@ -32,7 +32,7 @@
       </ul>
     </div>
     <div id="outfit-part" v-if="outfitPart">
-      <h3>Outfit</h3>
+      <p class="outfit-title">O U T F I T</p>
       <div id="location-part">
         <ul
           id="location-list"
@@ -54,7 +54,22 @@
           </li>
         </ul>
       </div>
-      <div id="category-part"></div>
+      <div id="category-part">
+        <div id="category-list">
+          <div
+            v-for="(category, index) in categories"
+            :key="index"
+            class="category-item"
+          >
+            <input
+              type="checkbox"
+              :value="category"
+              v-model="selectedCategories"
+            />
+            <label>{{ category }}</label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +77,7 @@
 import Header from "./Header.vue";
 import axios from "axios";
 import { locations, locationMapping } from "@/js/location_mapping.js";
+import { categories } from "@/js/category.js";
 
 export default {
   name: "AppMain",
@@ -82,19 +98,8 @@ export default {
       locations,
       selectedLocation: "",
       locationMapping,
-      cataegory: [
-        "남성",
-        "여성",
-        "10대",
-        "20대",
-        "30대",
-        "40대",
-        "50대",
-        "60대 이상",
-        "오늘",
-        "최근 1주일",
-        "최근 한달",
-      ],
+      categories,
+      selectedCategories: [],
     };
   },
   created() {
@@ -337,18 +342,24 @@ ul {
   background: #f4f4f4;
 }
 
+.outfit-title {
+  font-size: 30px;
+  text-align: center;
+}
+
 #location-part {
-  margin-top: 10px;
-  background-color: rgb(235 235 235);
+  margin-top: 15px;
+  /* backgroun
+  d-color: rgb(235 235 235); */
 }
 
 #location-list {
-  margin: 10px 0;
+  /* margin: 10px 0; */
   display: flex;
   width: 100%;
-  height: 50px;
+  height: 25px;
   overflow-x: auto;
-  padding: 0 10px;
+  padding: 0px 10px;
   cursor: grab;
 }
 #location-list:active {
@@ -362,7 +373,7 @@ ul {
 
 #location-list > li > a {
   color: #aaa;
-  font-size: 16px;
+  font-size: 18px;
   text-decoration: none;
   transition: font-weight 0.2s ease-in-out;
 }
@@ -371,7 +382,29 @@ ul {
   color: #333;
 }
 
-#location-list::-webkit-scrollbar {
+#location-list::-webkit-scrollbar,
+#category-list::-webkit-scrollbar {
   display: none;
+}
+
+#category-part {
+  margin-left: 10px;
+  width: 100%;
+}
+
+#category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  color: #aaa;
+  font-size: 16px;
 }
 </style>

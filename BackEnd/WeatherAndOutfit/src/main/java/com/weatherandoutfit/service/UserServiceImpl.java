@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 		String imageUrl = null;
 		try {
 			if(!file.getOriginalFilename().isEmpty()) {
-				imageUrl  = s3Service.uploadFile(file);
+				imageUrl  = s3Service.uploadFile(file, true);
 			} else {
 				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/userProfile/user.png";
 			}

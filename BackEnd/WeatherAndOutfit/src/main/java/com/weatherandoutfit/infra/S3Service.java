@@ -36,8 +36,13 @@ public class S3Service {
 	
 	
 	//이미지 파일 업로드
-	public String uploadFile(MultipartFile file) throws IOException {
-		String fileName = "userProfile/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+	public String uploadFile(MultipartFile file, Boolean isProfileImg) throws IOException {
+		String fileName = null;
+		if(isProfileImg) {
+			fileName = "userProfile/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+		} else {
+			fileName = "outfit/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
+		}
 		
 		File convertedFile = convertFile(file);
 		log.info("{},{}", fileName, convertedFile);
