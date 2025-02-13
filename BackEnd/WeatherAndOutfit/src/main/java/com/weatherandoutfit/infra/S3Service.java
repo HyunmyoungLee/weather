@@ -55,7 +55,12 @@ public class S3Service {
 	}
 	
 	public void deleteFile(String fileName) {
-		amazonS3.deleteObject(bucketName,fileName);
+		if(amazonS3.doesObjectExist(bucketName, fileName)) {
+			amazonS3.deleteObject(bucketName,fileName);
+			log.info("S3 파일 삭제 완료");
+		} else {
+			log.info("S3 파일이 존재하지  않습니다");
+		}
 	}
 
 	private File convertFile(MultipartFile file) throws IOException {

@@ -5,4 +5,20 @@
 		INSERT INTO board (email, codeId, title, content, imageUrl)
 		VALUES(#{email}, #{codeId}, #{title}, #{content}, #{imageUrl})
 	</insert>
+	
+	<select id="getBoard" resultType="com.weatherandoutfit.domain.BoardVO">
+		SELECT * FROM board
+		WHERE boardId = #{boardId}
+	</select>
+	
+	<delete id="deleteBoard">
+		DELETE FROM board
+		WHERE boardId = #{boardId} and email = #{email}
+	</delete>
+	
+	<update id="updateBoard">
+		UPDATE BOARD
+		SET title = #{title}, content = #{content}, imageUrl = #{imageUrl}, createdDate = now()
+		WHERE boardId = #{boardId} and email = #{email}  
+	</update>
 </mapper>
