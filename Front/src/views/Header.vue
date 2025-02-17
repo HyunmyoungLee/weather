@@ -17,7 +17,7 @@
           class="userImage"
           @click="enterMyPage"
         />
-        <p class="input-title">Weather & Outfit</p>
+        <p class="input-title">Weather</p>
         <img
           v-if="showSearchImg"
           src="../images/search.png"
@@ -153,6 +153,11 @@ export default {
   width: 25px;
   height: 25px;
   margin-right: auto;
+  cursor: pointer;
+}
+
+.loginImage:hover,
+.userImage:hover {
   cursor: pointer;
 }
 

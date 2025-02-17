@@ -31,58 +31,26 @@
         </li>
       </ul>
     </div>
-    <div id="outfit-part" v-if="outfitPart">
-      <p class="outfit-title">O U T F I T</p>
-      <div id="location-part">
-        <ul
-          id="location-list"
-          ref="locationList"
-          @mousedown="startDrag"
-          @mouseleave="stopDrag"
-          @mouseup="stopDrag"
-          @mousemove="onDrag"
-        >
-          <li
-            v-for="(location, index) in locations"
-            :key="index"
-            @click="selectLocation(location)"
-            :class="{
-              active: selectedLocation === location || activeIndex === index,
-            }"
-          >
-            <a :class="{ active: activeIndex === index }">{{ location }}</a>
-          </li>
-        </ul>
-      </div>
-      <div id="category-part">
-        <div id="category-list">
-          <div
-            v-for="(category, index) in categories"
-            :key="index"
-            class="category-item"
-          >
-            <input
-              type="checkbox"
-              :value="category"
-              v-model="selectedCategories"
-            />
-            <label>{{ category }}</label>
-          </div>
-        </div>
-      </div>
-    </div>
+    <OutfitPart
+      v-if="outfitPart"
+      :outfitPart="outfitPart"
+      :locations="locations"
+      v-model:selectedLocation="selectedLocation"
+      v-model:activeIndex="activeIndex"
+    />
   </div>
 </template>
 <script>
 import Header from "./Header.vue";
 import axios from "axios";
 import { locations, locationMapping } from "@/js/location_mapping.js";
-import { categories } from "@/js/category.js";
+import OutfitPart from "./OutfitPart.vue";
 
 export default {
   name: "AppMain",
   components: {
     Header,
+    OutfitPart,
   },
   data() {
     return {
@@ -98,8 +66,6 @@ export default {
       locations,
       selectedLocation: "",
       locationMapping,
-      categories,
-      selectedCategories: [],
     };
   },
   created() {
@@ -117,7 +83,7 @@ export default {
         .get("http://localhost:8081/user/status", {})
         .then((response) => {
           if (response.data.name != null) {
-            console.log(response.data);
+            console.log("로그인 유저 정보  : ", response.data);
           } else {
             console.log("오류");
           }
@@ -225,28 +191,7 @@ export default {
           console.error(err);
         });
     },
-    startDrag(e) {
-      this.isDown = true;
-      this.startX = e.pageX - this.$refs.locationList.offsetLeft;
-      this.scrollLeft = this.$refs.locationList.scrollLeft;
-    },
-    stopDrag() {
-      this.isDown = false;
-    },
-    onDrag(e) {
-      if (!this.isDown) return;
-      e.preventDefault();
-      const x = e.pageX - this.$refs.locationList.offsetLeft;
-      const walk = (x - this.startX) * 2;
-      this.$refs.locationList.scrollLeft = this.scrollLeft - walk;
-    },
-    setActive(index) {
-      this.activeIndex = index;
-    },
-    selectLocation(location) {
-      this.selectedLocation = location;
-      this.activeIndex = this.locations.indexOf(location);
-    },
+
     setLocationByCoordinates() {
       console.log(`user location : lat=${this.lat} lon = ${this.lon}`);
       for (let location in this.locationMapping) {
@@ -340,71 +285,5 @@ ul {
 
 ::-webkit-scrollbar-track {
   background: #f4f4f4;
-}
-
-.outfit-title {
-  font-size: 30px;
-  text-align: center;
-}
-
-#location-part {
-  margin-top: 15px;
-  /* backgroun
-  d-color: rgb(235 235 235); */
-}
-
-#location-list {
-  /* margin: 10px 0; */
-  display: flex;
-  width: 100%;
-  height: 25px;
-  overflow-x: auto;
-  padding: 0px 10px;
-  cursor: grab;
-}
-#location-list:active {
-  cursor: grabbing;
-}
-
-#location-list > li {
-  flex: 0 0 auto;
-  margin-right: 10px;
-}
-
-#location-list > li > a {
-  color: #aaa;
-  font-size: 18px;
-  text-decoration: none;
-  transition: font-weight 0.2s ease-in-out;
-}
-#location-list > li > a.active {
-  font-weight: bold;
-  color: #333;
-}
-
-#location-list::-webkit-scrollbar,
-#category-list::-webkit-scrollbar {
-  display: none;
-}
-
-#category-part {
-  margin-left: 10px;
-  width: 100%;
-}
-
-#category-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  padding: 10px 0;
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex: 0 0 auto;
-  color: #aaa;
-  font-size: 16px;
 }
 </style>
