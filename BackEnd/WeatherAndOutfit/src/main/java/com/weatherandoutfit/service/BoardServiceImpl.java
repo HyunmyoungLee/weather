@@ -1,6 +1,8 @@
 package com.weatherandoutfit.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -92,6 +94,14 @@ public class BoardServiceImpl implements BoardService {
 		String[] strArray = imageUrl.split("/");
 		String s3Path = strArray[3] +"/" + strArray[4];
 		return s3Path;
+	}
+
+	@Override
+	public List<BoardVO> getBoardList(String location, ArrayList<String> genders, ArrayList<String> ages,
+			String period) {
+		log.info("boardList 동작");
+		List<BoardVO> boardList = boardDAO.getBoardList(location, genders, ages, period);
+		return boardList;
 	}
 
 }

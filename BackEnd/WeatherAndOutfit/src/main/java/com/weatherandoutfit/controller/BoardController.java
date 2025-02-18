@@ -1,13 +1,19 @@
 package com.weatherandoutfit.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/board")
+@CrossOrigin(origins = "http://localhost:8080")
 public class BoardController {
 	
 	@Autowired
@@ -34,16 +41,16 @@ public class BoardController {
 	
 	@PostMapping(value ="/addPost" ,produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> addPost(@RequestPart("outfitPost") BoardDTO board, @RequestPart(value = "file", required = true)MultipartFile file, HttpServletRequest request){
-//		HttpSession session = request.getSession(false);
-//		if(session == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 없습니다");
-//		}	
+		HttpSession session = request.getSession(false);
+		if(session == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 없습니다");
+		}	
 		if(file == null) {
 			file = new MockMultipartFile("file", new byte[0]);
 		}
-//		UserDTO userSession = (UserDTO) session.getAttribute("user");
-//		String email = userSession.getEmail();
-		String email = "hyunmyoung100@gmail.com";
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		String email = userSession.getEmail();
+
 		board.setEmail(email);
 		log.info(board.toString());
 		int result = boardService.addPost(board, file);
@@ -64,13 +71,12 @@ public class BoardController {
 	
 	@PutMapping(value ="/modifyPost/{boardId}",consumes = "multipart/form-data", produces="application/json;charset=UTF-8")
 	public ResponseEntity<Object> updatePost(@PathVariable("boardId")int boardId, @RequestPart("outfitPost") BoardDTO board, @RequestPart(value="file", required= false) MultipartFile file, HttpServletRequest request){
-//		HttpSession session = request.getSession(false);
-//		if(session == null) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 없습니다");
-//		}	
-//		UserDTO user = (UserDTO) session.getAttribute("user");
-//		String email =  user.getEmail();
-		String email = "hyunmyoung100@gmail.com";
+		HttpSession session = request.getSession(false);
+		if(session == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 없습니다");
+		}	
+		UserDTO user = (UserDTO) session.getAttribute("user");
+		String email =  user.getEmail();
 		board.setEmail(email);
 		if(file == null) {
 			file = new MockMultipartFile("file",new  byte[0]);
@@ -79,6 +85,12 @@ public class BoardController {
 		int result = boardService.updatePost(boardId, board, file);
 		return result == 1 ? ResponseEntity.ok("수정 완료") : ResponseEntity.badRequest().body("수정 실패");
 				
+	}
+	
+	@GetMapping(value="/getBoard", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> getBoard(@Param("location") String location, @Param("genders")ArrayList<String> genders, @Param("ages")ArrayList<String> ages,@Param("period") String period ){
+		List<BoardVO> boardList = boardService.getBoardList(location,genders,ages,period);
+		return ResponseEntity.ok(genders);
 	}
 	
 }

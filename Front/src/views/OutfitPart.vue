@@ -29,7 +29,7 @@
       <div v-if="expandedModal" class="modal-content expanded-content">
         <div id="modal_header">
           <p class="title">새 게시물 만들기</p>
-          <p v-if="isValidImage" @click="nextModal" class="share">공유하기</p>
+          <p v-if="isValidImage" @click="uploadPost" class="share">공유하기</p>
         </div>
         <div class="image-preview">
           <img v-if="isValidImage" :src="imgSrc" alt="preview" />
@@ -43,64 +43,106 @@
             v-model="content"
             placeholder="설명을 입력하세요"
           ></textarea>
+          <div id="postLocation-part">
+            <img src="@/images/pin.png" alt="location" />
+            <select v-model="codeId">
+              <option
+                v-for="(location, index) in locations"
+                :key="index"
+                :value="index + 1"
+              >
+                {{ location }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div id="location-part">
-    <ul
-      id="location-list"
-      ref="locationList"
-      @mousedown="startDrag"
-      @mouseleave="stopDrag"
-      @mouseup="stopDrag"
-      @mousemove="onDrag"
-    >
-      <li
-        v-for="(location, index) in locations"
-        :key="index"
-        @click="selectLocation(location)"
-        :class="{
-          active: selectedLocation === location || activeIndex === index,
-        }"
+
+    <div id="location-part">
+      <ul
+        id="location-list"
+        ref="locationList"
+        @mousedown="startDrag"
+        @mouseleave="stopDrag"
+        @mouseup="stopDrag"
+        @mousemove="onDrag"
       >
-        <a :class="{ active: activeIndex === index }">{{ location }}</a>
-      </li>
-    </ul>
-    <div id="category-part">
-      <div id="category-list">
-        <div
-          v-for="(category, index) in categories"
+        <li
+          v-for="(location, index) in locations"
           :key="index"
-          class="category-item"
+          @click="selectLocation(location)"
+          :class="{
+            active: selectedLocation === location || activeIndex === index,
+          }"
         >
-          <input
-            type="checkbox"
-            :value="category"
-            v-model="selectedCategories"
-          />
-          <label>{{ category }}</label>
+          <a :class="{ active: activeIndex === index }">{{ location }}</a>
+        </li>
+      </ul>
+      <div id="category-part">
+        <div id="category-list">
+          <div class="category-item">
+            <label v-for="gender in genders" :key="gender">
+              <input
+                type="checkbox"
+                :value="gender"
+                v-model="selectedGender"
+                @change="getBoard"
+              />
+              {{ gender }}
+            </label>
+            <label v-for="age in ages" :key="age">
+              <input
+                type="checkbox"
+                :value="age"
+                v-model="selectedAge"
+                @change="getBoard"
+              />
+              {{ age }}
+            </label>
+            <label v-for="period in periods" :key="period">
+              <input
+                type="radio"
+                :value="period"
+                name="period"
+                v-model="selectedPeriod"
+                @change="getBoard"
+              />
+              {{ period }}
+            </label>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="orderMethods">
+      <a>추천순</a>
+      <a>최신순</a>
     </div>
   </div>
 </template>
 
 <script>
-import { categories } from "@/js/category.js";
+import { genders, ages, periods } from "@/js/category.js";
 import { mapState } from "vuex";
+import axios from "axios";
+axios.defaults.withCredentials = true;
 export default {
   name: "OutfitPart",
   data() {
     return {
-      selectedCategories: [],
-      categories,
+      selectedGender: [],
+      selectedAge: [],
+      selectedPeriod: "",
+      genders,
+      ages,
+      periods,
       isValidImage: false,
       file: null,
       imgSrc: require("@/images/image.png"),
       isModalOpen: false,
       expandedModal: false,
       content: "",
+      codeId: 0,
     };
   },
   props: {
@@ -144,6 +186,59 @@ export default {
       }
       console.log(this.isValidImage);
     },
+    async uploadPost() {
+      if (this.codeId === 0) {
+        alert("지역은 필수 선택입니다");
+      } else {
+        const formData = new FormData();
+        const json = JSON.stringify({
+          content: this.content,
+          codeId: this.codeId,
+        });
+        const blob = new Blob([json], { type: "application/json" });
+        formData.append("outfitPost", blob);
+        if (this.file) {
+          formData.append("file", this.file);
+        }
+
+        try {
+          await axios
+            .post("http://localhost:8081/board/addPost", formData)
+            .then((res) => {
+              console.log("포스팅 데이터 : ", res);
+              alert("게시물 등록이 완료되었습니다");
+              this.file = null;
+              this.codeId = 0;
+              this.content = "";
+              location.href = "/";
+            });
+        } catch (error) {
+          alert("서버 오류로 인한 게시물 등록 실패");
+        }
+      }
+    },
+    async getBoard() {
+      console.log(
+        this.selectedLocation,
+        this.selectedGender,
+        this.selectedAge,
+        this.selectedPeriod
+      );
+      const params = new URLSearchParams();
+      this.selectedGender.forEach((gender) => params.append("genders", gender));
+      this.selectedAge.forEach((age) => params.append("ages", age));
+      params.append("location", this.selectedLocation);
+      params.append("period", this.selectedPeriod);
+      try {
+        await axios
+          .get(`http://localhost:8081/board/getBoard?${params.toString()}`)
+          .then((res) => {
+            console.log(res);
+          });
+      } catch (error) {
+        console.error("서버 오류로 인한 데이터 로딩 실패");
+      }
+    },
     startDrag(e) {
       this.isDown = true;
       this.startX = e.pageX - this.$refs.locationList.offsetLeft;
@@ -162,6 +257,9 @@ export default {
     selectLocation(location) {
       this.$emit("update:selectedLocation", location);
       this.$emit("update:activeIndex", this.locations.indexOf(location));
+      this.$nextTick(() => {
+        this.getBoard();
+      });
     },
     showPostModal() {
       this.isModalOpen = true;
@@ -171,6 +269,7 @@ export default {
       this.imgSrc = require("@/images/image.png");
       this.isValidImage = false;
       this.expandedModal = false;
+      this.postLocation = null;
     },
     nextModal() {
       this.expandedModal = true;
@@ -242,12 +341,16 @@ ul {
   flex-wrap: wrap;
   gap: 15px;
   padding: 10px 0;
+  width: 100%;
 }
 
 .category-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  overflow: hidden;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 15px;
   flex: 0 0 auto;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
   font-size: 16px;
@@ -310,8 +413,8 @@ ul {
 .expanded-content {
   width: 700px;
   display: flex;
-  flex-direction: row; /* 사진과 설명란을 가로로 배치 */
-  justify-content: space-between; /* 사진과 설명란 사이 공간 확보 */
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -416,5 +519,44 @@ ul {
   padding: 10px;
   border-radius: 5px;
   background: #f5f5f5;
+}
+#postLocation-part {
+  display: flex;
+  margin-top: 10px;
+}
+#postLocation-part img {
+  width: 28px;
+  height: 28px;
+}
+#postLocation-part select {
+  width: 100%;
+  height: 30px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 2px 5px 2px 5px;
+  border: 1px solid #cccccc;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease-in-out;
+}
+#postLocation-part select:focus {
+  border-color: #007bfc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 252, 0.5);
+}
+.orderMethods {
+  display: flex;
+  gap: 10px;
+  margin: 0px 5px;
+  justify-content: flex-end;
+}
+.orderMethods a:hover {
+  cursor: pointer;
+  font-weight: bold;
 }
 </style>

@@ -1,7 +1,9 @@
 package com.weatherandoutfit.persistence;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -54,6 +56,13 @@ public class BoardDAOImpl implements BoardDAO {
 		args.put("imageUrl", board.getImageUrl());
 		args.put("email", board.getEmail());
 		return ses.update(NS+"updateBoard", args);
+	}
+
+	@Override
+	public List<BoardVO> getBoardList(String location, ArrayList<String> genders, ArrayList<String> ages,
+			String period) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		return null;
 	}
 	
 }
