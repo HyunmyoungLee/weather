@@ -1,6 +1,8 @@
 package com.weatherandoutfit.persistence;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Repository;
 
 import com.weatherandoutfit.domain.BoardDTO;
@@ -59,10 +62,39 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 
 	@Override
-	public List<BoardVO> getBoardList(String location, ArrayList<String> genders, ArrayList<String> ages,
+	public List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages,
 			String period) {
 		Map<String, Object> args = new HashMap<String, Object>();
-		return null;
+		args.put("location", location);
+		if(genders.size() > 0) {	
+			args.put("genders", genders);
+		} 
+		
+		if(ages.size() > 0) {
+			args.put("ages", ages);
+		}
+		if(period != null && !period.isEmpty()) {
+			LocalDateTime now = LocalDateTime.now();
+			switch (period) {
+				case "오늘" :
+					args.put("period", now.toLocalDate().atStartOfDay().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					break;
+				case  "최근 1주일" :  
+					args.put("period", now.minusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					break;
+				case "최근 한 달" : 
+					args.put("period", now.minusMonths(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+					break;		
+			}
+		}
+		
+		log.info(args.toString());
+		List<BoardVO> boardList  = ses.selectList(NS+"getBoardList", args);
+		if(boardList == null) {
+			boardList  = new ArrayList<BoardVO>();
+		}
+		log.info(" DAO단 boardList : {}", boardList.toString());
+		return boardList;
 	}
 	
 }

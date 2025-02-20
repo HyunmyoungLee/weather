@@ -97,7 +97,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<BoardVO> getBoardList(String location, ArrayList<String> genders, ArrayList<String> ages,
+	public List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages,
 			String period) {
 		log.info("boardList 동작");
 		List<BoardVO> boardList = boardDAO.getBoardList(location, genders, ages, period);

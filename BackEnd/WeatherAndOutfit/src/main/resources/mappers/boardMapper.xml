@@ -21,4 +21,50 @@
 		SET title = #{title}, content = #{content}, imageUrl = #{imageUrl}, createdDate = now()
 		WHERE boardId = #{boardId} and email = #{email}  
 	</update>
+	<select id="getBoardList" resultType="com.weatherandoutfit.domain.BoardVO">
+		SELECT b.*, l.name, u.gender, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age 
+		FROM board b inner join location l 
+		ON b.codeId = l.codeId
+		inner join user u
+		on b.email = u.email
+		WHERE l.name = #{location}
+		<if test="genders != null and genders.size() > 0">
+			AND gender IN 
+			<foreach collection="genders" item="gender" open="(" separator = "," close=")">
+				#{gender}
+			</foreach>
+		</if>
+		<if test="ages != null and ages.size() > 0">
+			AND (
+				<foreach collection="ages" item="age" separator=" OR ">
+		            <choose>
+		                <when test="age == '10대'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN 10 AND 19
+		                </when>
+		                <when test="age == '20대'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN 20 AND 29
+		                </when>
+		                <when test="age == '30대'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN 30 AND 39
+		                </when>
+		                <when test="age == '40대'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN 40 AND 49
+		                </when>
+		                <when test="age == '50대'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN 50 AND 59
+		                </when>
+		                <when test="age == '60대 이상'">
+		                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) >= 60
+		                </when>
+		            </choose>
+        </foreach>
+			)
+		</if>
+		
+		<if test="period != null and period!= ''">
+		 	AND createdDate >= STR_TO_DATE(#{period}, '%Y-%m-%d %H:%i:%s')
+		</if>
+		
+		
+	</select>
 </mapper>

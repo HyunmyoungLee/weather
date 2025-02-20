@@ -118,6 +118,14 @@
       <a>추천순</a>
       <a>최신순</a>
     </div>
+    <div class="image-list" v-if="imageList">
+      <img
+        v-for="(image, index) in imageList"
+        :key="index"
+        :src="image"
+        alt=""
+      />
+    </div>
   </div>
 </template>
 
@@ -143,6 +151,7 @@ export default {
       expandedModal: false,
       content: "",
       codeId: 0,
+      imageList: [],
     };
   },
   props: {
@@ -218,23 +227,51 @@ export default {
       }
     },
     async getBoard() {
+      this.imageList = [];
       console.log(
         this.selectedLocation,
         this.selectedGender,
         this.selectedAge,
         this.selectedPeriod
       );
+      const genderMap = {
+        남성: "male",
+        여성: "female",
+      };
+
       const params = new URLSearchParams();
-      this.selectedGender.forEach((gender) => params.append("genders", gender));
-      this.selectedAge.forEach((age) => params.append("ages", age));
       params.append("location", this.selectedLocation);
-      params.append("period", this.selectedPeriod);
+      if (this.selectedGender.length > 0) {
+        this.selectedGender.forEach((gender) => {
+          params.append("genders", genderMap[gender] || gender);
+        });
+      } else {
+        params.append("genders", "");
+      }
+      if (this.selectedAge.length > 0) {
+        params.append("ages", this.selectedAge.join(","));
+      } else {
+        params.append("ages", "");
+      }
+      if (this.selectedPeriod) {
+        params.append("period", this.selectedPeriod);
+      } else {
+        params.append("period", "");
+      }
       try {
         await axios
           .get(`http://localhost:8081/board/getBoard?${params.toString()}`)
           .then((res) => {
             console.log(res);
+            if (res.data) {
+              for (let i = 0; i < res.data.length; i++) {
+                this.imageList.push(res.data[i].imageUrl);
+              }
+            } else {
+              this.imageList = [];
+            }
           });
+        console.log(this.imageList);
       } catch (error) {
         console.error("서버 오류로 인한 데이터 로딩 실패");
       }

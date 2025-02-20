@@ -18,7 +18,7 @@ public interface BoardDAO {
 	
 	int updatePost(int boardId, BoardDTO board);
 	
-	public List<BoardVO> getBoardList(String location, ArrayList<String> genders, ArrayList<String> ages,
+	public List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages,
 			String period);
 
 }

@@ -26,5 +26,7 @@ public class BoardVO {
 	private String content;
 	private String imageUrl;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime createdAt;
+	private LocalDateTime createdDate;
+	private String gender;
+	private int age;
 }

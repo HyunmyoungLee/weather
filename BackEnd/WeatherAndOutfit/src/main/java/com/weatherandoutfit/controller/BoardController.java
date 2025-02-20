@@ -1,6 +1,7 @@
 package com.weatherandoutfit.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,9 +89,16 @@ public class BoardController {
 	}
 	
 	@GetMapping(value="/getBoard", produces = "application/json;charset=UTF-8")
-	public ResponseEntity<Object> getBoard(@Param("location") String location, @Param("genders")ArrayList<String> genders, @Param("ages")ArrayList<String> ages,@Param("period") String period ){
-		List<BoardVO> boardList = boardService.getBoardList(location,genders,ages,period);
-		return ResponseEntity.ok(genders);
+	public ResponseEntity<Object> getBoard(@RequestParam("location") String location, @RequestParam( value = "genders", required = false, defaultValue =  "")String genders, @RequestParam(value = "ages", required = false, defaultValue ="")String ages,@RequestParam(value ="period", required = false, defaultValue = "") String period ){
+		List<String> genderList = genders.isEmpty() ? new ArrayList<String>() : Arrays.asList(genders.split(","));
+		List<String> ageList = ages.isEmpty() ? new ArrayList<String>() :  Arrays.asList(ages.split(","));
+		List<BoardVO> boardList = boardService.getBoardList(location,genderList,ageList,period);
+		if(boardList != null && !boardList.isEmpty()) {
+			return ResponseEntity.ok(boardList);
+		}
+
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
 	}
 	
 }
