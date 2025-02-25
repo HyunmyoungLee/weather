@@ -1,0 +1,147 @@
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#login_area {
+  width: 330px;
+  height: 1000px;
+  margin: 0 auto;
+  position: relative;
+}
+
+#login_header {
+  width: 100%;
+  height: 20px;
+  padding: 76px 0 60px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#login_header > h1:hover {
+  cursor: pointer;
+}
+#login_box {
+  width: 100%;
+  margin: 0 auto;
+}
+#login_box .input {
+  width: 100%;
+  height: 50px;
+  padding: 15px 10px 14px;
+  box-sizing: border-box;
+  border: 1px solid #cccccc;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+}
+#loginError {
+  color: red;
+}
+.submit {
+  display: block;
+  margin: 10px 0 20px;
+}
+
+.submit > button {
+  width: 100%;
+  height: 60px;
+  color: #ffffff;
+  background-color: #000000;
+  text-align: center;
+  border: none;
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#login_box > #sub_menu {
+  margin: 36px 0;
+  display: block;
+  height: 22px;
+}
+
+#sub_menu > li {
+  float: left;
+  margin-left: 20px;
+}
+
+#sub_menu > li:first-child {
+  margin-left: 10px;
+}
+
+#sub_menu > li:after {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background-color: #aaa;
+  margin-left: 20px;
+  position: relative;
+  top: 2px;
+}
+
+#sub_menu > li:nth-child(3)::after {
+  display: none;
+}
+
+#sub_menu > li > a {
+  color: #aaa;
+  font-size: 14px;
+}
+
+#socialLogin {
+  width: auto;
+  margin: 30px 0 35px;
+}
+
+#kakao {
+  width: 100%;
+  height: 42px;
+  background-color: #fee500;
+  border: 1px #fee500 solid;
+  border-radius: 6px;
+  text-align: center;
+  padding-top: 9px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#socialLogin > a {
+  display: block;
+}
+
+#socialLogin > a > span {
+  font-size: 15px;
+  font-weight: bold;
+  position: relative;
+  top: -13px;
+}
+
+#socialLogin > #kakao > span::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background: url(../images/kakao-talk.png) no-repeat;
+  background-size: 30px 30px;
+  position: relative;
+  top: 10px;
+  margin-right: 10px;
+}

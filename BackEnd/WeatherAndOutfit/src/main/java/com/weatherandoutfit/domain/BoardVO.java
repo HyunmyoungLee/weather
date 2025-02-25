@@ -29,4 +29,6 @@ public class BoardVO {
 	private LocalDateTime createdDate;
 	private String gender;
 	private int age;
+	private String nickName;
+	private String profileImg;
 }

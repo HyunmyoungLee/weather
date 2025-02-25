@@ -22,7 +22,7 @@
 		WHERE boardId = #{boardId} and email = #{email}  
 	</update>
 	<select id="getBoardList" resultType="com.weatherandoutfit.domain.BoardVO">
-		SELECT b.*, l.name, u.gender, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age 
+		SELECT b.*, l.name, u.gender, u.nickName, u.imageUrl as profileImg, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age 
 		FROM board b inner join location l 
 		ON b.codeId = l.codeId
 		inner join user u

@@ -1,0 +1,65 @@
+ul {
+  list-style-type: none;
+}
+.currentWeatherInfo {
+  background-color: white;
+  margin: 20px 20px;
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: center;
+  display: flex;
+}
+
+.currentWeatherInfo img {
+  width: 150px;
+  height: 150px;
+}
+
+.forecast-group {
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 10px;
+  margin: 20px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forecast-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.forecast-item {
+  flex: 0 0 auto;
+  width: 120px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.forecast-item img {
+  width: 60px;
+  height: 60px;
+}
+
+.forecast-item p {
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #d1d1d1, #b0b0b0);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #b0b0b0, #909090);
+}
+
+::-webkit-scrollbar-track {
+  background: #eaeaea;
+}
