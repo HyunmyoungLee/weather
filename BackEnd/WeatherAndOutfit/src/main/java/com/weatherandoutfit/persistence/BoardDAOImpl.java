@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import com.weatherandoutfit.domain.BoardDTO;
 import com.weatherandoutfit.domain.BoardVO;
+import com.weatherandoutfit.domain.LikedBoardDTO;
+import com.weatherandoutfit.domain.LikedBoardVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -95,6 +97,28 @@ public class BoardDAOImpl implements BoardDAO {
 		}
 		log.info(" DAO단 boardList : {}", boardList.toString());
 		return boardList;
+	}
+
+	@Override
+	public LikedBoardVO getLikedBoard(int boardId, String email) {
+		Map<String, Object> args = new HashMap<String, Object>();
+		args.put("boardId", boardId);
+		args.put("email", email);
+		LikedBoardVO likedBoard = ses.selectOne(NS+"getLikedBoard", args);
+		if(likedBoard == null) {
+			return new LikedBoardVO();
+		}
+		return likedBoard;
+	}
+
+	@Override
+	public int addLikedBoard(LikedBoardDTO likedBoard) {
+		return ses.insert(NS+"addLikedBoard", likedBoard);
+	}
+
+	@Override
+	public int deleteLikedBoard(LikedBoardDTO likedBoard) {
+		return ses.delete(NS+"deleteLikedBoard", likedBoard);
 	}
 	
 }

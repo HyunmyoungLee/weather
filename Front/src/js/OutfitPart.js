@@ -3,6 +3,7 @@ import { mapState } from "vuex";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import defaultImg from "@/images/image.png";
+import BoardModal from "@/views/BoardModal.vue";
 export default {
   name: "OutfitPart",
   data() {
@@ -24,13 +25,20 @@ export default {
       nicknameList: [],
       profileImages: [],
       createdDates: [],
+      userData: [],
+      isBoardModalOpen: false,
+      selectedIndex: null,
     };
+  },
+  components: {
+    BoardModal,
   },
   props: {
     outfitPart: Boolean,
     locations: Array,
     selectedLocation: String,
     activeIndex: Number,
+    loginUserEmail: String,
   },
   computed: {
     ...mapState(["imageUrl", "nickname"]),
@@ -150,14 +158,13 @@ export default {
           .then((res) => {
             console.log(res);
             if (res.data) {
+              this.userData = res.data;
               for (let i = 0; i < res.data.length; i++) {
                 this.imageList.push(res.data[i].imageUrl);
                 this.nicknameList.push(res.data[i].nickName);
                 this.profileImages.push(res.data[i].profileImg);
                 this.createdDates.push(res.data[i].createdDate);
               }
-            } else {
-              this.imageList = [];
             }
           });
         console.log(this.imageList);
@@ -183,9 +190,6 @@ export default {
     selectLocation(location) {
       this.$emit("update:selectedLocation", location);
       this.$emit("update:activeIndex", this.locations.indexOf(location));
-      this.$nextTick(() => {
-        this.getBoard();
-      });
     },
     showPostModal() {
       console.log("this 확인 : ", this);
@@ -220,6 +224,13 @@ export default {
       } else {
         return `${Math.floor(gap / 31536000)}년 전`;
       }
+    },
+    showBoardModal(index) {
+      this.isBoardModalOpen = true;
+      this.selectedIndex = index;
+    },
+    closeBoardModal() {
+      this.isBoardModalOpen = false;
     },
   },
 };

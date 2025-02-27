@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.weatherandoutfit.domain.BoardDTO;
 import com.weatherandoutfit.domain.BoardVO;
+import com.weatherandoutfit.domain.LikedBoardDTO;
+import com.weatherandoutfit.domain.LikedBoardVO;
 
 
 public interface BoardDAO {
@@ -20,5 +22,11 @@ public interface BoardDAO {
 	
 	public List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages,
 			String period);
+
+	LikedBoardVO getLikedBoard(int boardId, String email);
+
+	int addLikedBoard(LikedBoardDTO likedBoard);
+
+	int deleteLikedBoard(LikedBoardDTO likedBoard);
 
 }

@@ -22,7 +22,7 @@
 		WHERE boardId = #{boardId} and email = #{email}  
 	</update>
 	<select id="getBoardList" resultType="com.weatherandoutfit.domain.BoardVO">
-		SELECT b.*, l.name, u.gender, u.nickName, u.imageUrl as profileImg, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age 
+		SELECT b.*, l.name, u.gender, u.nickName, u.birthdate, u.imageUrl as profileImg, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age 
 		FROM board b inner join location l 
 		ON b.codeId = l.codeId
 		inner join user u
@@ -67,4 +67,17 @@
 		
 		
 	</select>
+	<select id="getLikedBoard" resultType="com.weatherandoutfit.domain.LikedBoardVO">
+		SELECT * FROM LIKEDBOARD
+		WHERE email = #{email} and boardId = #{boardId}
+	</select>
+	
+	<insert id="addLikedBoard">
+	INSERT INTO LIKEDBOARD(email, boardId) VALUES(#{email}, #{boardId})
+	</insert>
+	
+	<delete id="deleteLikedBoard">
+		DELETE FROM likedboard
+		WHERE email = #{email} and boardId = #{boardId}
+	</delete>
 </mapper>

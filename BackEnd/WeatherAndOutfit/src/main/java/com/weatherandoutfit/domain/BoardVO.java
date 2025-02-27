@@ -1,5 +1,6 @@
 package com.weatherandoutfit.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -31,4 +32,6 @@ public class BoardVO {
 	private int age;
 	private String nickName;
 	private String profileImg;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private LocalDate birthdate;
 }

@@ -23,6 +23,7 @@ export default {
       locations,
       selectedLocation: "",
       locationMapping,
+      loginUserEmail: "",
     };
   },
   created() {
@@ -41,6 +42,7 @@ export default {
         .then((response) => {
           if (response.data.name != null) {
             console.log("로그인 유저 정보  : ", response.data);
+            this.loginUserEmail = response.data.email;
           } else {
             console.log("오류");
           }

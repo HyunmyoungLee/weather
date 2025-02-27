@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.weatherandoutfit.domain.BoardDTO;
 import com.weatherandoutfit.domain.BoardVO;
+import com.weatherandoutfit.domain.LikedBoardDTO;
 
 
 public interface BoardService {
@@ -16,4 +17,7 @@ public interface BoardService {
 	BoardVO getBoard(int boardId);
 	int updatePost(int boardId, BoardDTO board, MultipartFile file);
 	List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages, String period);
+	Boolean getLikedBoard(int boardId, String email);
+	int addLikedBoard(LikedBoardDTO likedBoard);
+	int deleteLikedBoard(LikedBoardDTO likedBoard);
 }

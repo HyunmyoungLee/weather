@@ -122,6 +122,7 @@ public class UserController {
 		
 		if(sessionData instanceof UserDTO) {
 			map.put("name", ((UserDTO)sessionData).getName());
+			map.put("email",((UserDTO)sessionData).getEmail());
 		}
 		return ResponseEntity.ok(map);
 	}

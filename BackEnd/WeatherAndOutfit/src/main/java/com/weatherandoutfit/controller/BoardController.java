@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.weatherandoutfit.domain.BoardDTO;
 import com.weatherandoutfit.domain.BoardVO;
+import com.weatherandoutfit.domain.LikedBoardDTO;
 import com.weatherandoutfit.domain.UserDTO;
 import com.weatherandoutfit.service.BoardServiceImpl;
 
@@ -99,6 +101,27 @@ public class BoardController {
 
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
+	}
+	
+	@GetMapping(value="/getLikedBoard",  produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> getLikedBoard(@RequestParam("boardId") int boardId, @RequestParam("email")String email){
+		Boolean checkLikedBoard  = boardService.getLikedBoard(boardId, email);
+		return ResponseEntity.ok(checkLikedBoard);
+	}
+	
+	@PostMapping(value="/addLikedBoard", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object>addLikedBoard(@RequestBody LikedBoardDTO likedBoard){
+		log.info(likedBoard.toString());
+		int result = boardService.addLikedBoard(likedBoard);
+		return ResponseEntity.ok(result == 1 ? "게시물 좋아요 성공" : "게시물 좋아요 실패");
+	}
+	
+	@DeleteMapping(value="/deleteLikedBoard", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object>deleteLikedBoard(@RequestBody LikedBoardDTO likedBoard){
+		log.info(likedBoard.toString());
+		int result = boardService.deleteLikedBoard(likedBoard);
+		
+		return ResponseEntity.ok(result == 1 ? "게시물 좋아요 삭제 성공" : "게시물 좋아요 삭제 실패");
 	}
 	
 }

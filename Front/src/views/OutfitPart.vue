@@ -122,7 +122,12 @@
       class="image-list"
       v-if="imageList && nicknameList && profileImages && createdDates"
     >
-      <div class="item" v-for="(image, index) in imageList" :key="index">
+      <div
+        class="item"
+        v-for="(image, index) in imageList"
+        :key="index"
+        @click="showBoardModal(index)"
+      >
         <img class="main-img" :src="image" alt="" />
         <div class="item-footer">
           <div class="userInfo">
@@ -139,6 +144,13 @@
         </div>
       </div>
     </div>
+    <BoardModal
+      v-if="isBoardModalOpen"
+      :selectedIndex="selectedIndex"
+      :userData="userData"
+      :loginUserEmail="loginUserEmail"
+      @close="closeBoardModal"
+    />
   </div>
 </template>
 <script>
@@ -146,7 +158,7 @@ import OutfitPartJs from "@/js/OutfitPart.js";
 export default OutfitPartJs;
 </script>
 
-<style scooped>
+<style scoped>
 ul {
   list-style: none;
 }

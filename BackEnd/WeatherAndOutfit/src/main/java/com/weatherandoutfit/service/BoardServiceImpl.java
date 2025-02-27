@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.weatherandoutfit.domain.BoardDTO;
 import com.weatherandoutfit.domain.BoardVO;
+import com.weatherandoutfit.domain.LikedBoardDTO;
+import com.weatherandoutfit.domain.LikedBoardVO;
 import com.weatherandoutfit.infra.S3Service;
 import com.weatherandoutfit.persistence.BoardDAOImpl;
 
@@ -102,6 +104,25 @@ public class BoardServiceImpl implements BoardService {
 		log.info("boardList 동작");
 		List<BoardVO> boardList = boardDAO.getBoardList(location, genders, ages, period);
 		return boardList;
+	}
+
+	@Override
+	public Boolean getLikedBoard(int boardId, String email) {
+		LikedBoardVO likedBoard = boardDAO.getLikedBoard(boardId, email); 
+		if(!likedBoard.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public int addLikedBoard(LikedBoardDTO likedBoard) {
+		return boardDAO.addLikedBoard(likedBoard);
+	}
+
+	@Override
+	public int deleteLikedBoard(LikedBoardDTO likedBoard) {
+		return boardDAO.deleteLikedBoard(likedBoard);
 	}
 
 }

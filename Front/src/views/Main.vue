@@ -37,6 +37,7 @@
       :locations="locations"
       v-model:selectedLocation="selectedLocation"
       v-model:activeIndex="activeIndex"
+      v-model:loginUserEmail="loginUserEmail"
     />
   </div>
 </template>
