@@ -20,8 +20,8 @@
     </div>
     <div v-if="isShowModal" class="modal" @click="closeModal">
       <div class="modal-content" @click.stop>
-        <p @click="goToProfile">프로필 사진 변경</p>
-        <p @click="goToProfile">프로필 닉네임 변경</p>
+        <p @click="changeProfilePic">프로필 사진 변경</p>
+        <p @click="changeNickname">프로필 닉네임 변경</p>
         <p @click="logout">로그아웃</p>
         <button @click="closeModal">닫기</button>
       </div>
@@ -63,6 +63,15 @@
       :loginUserEmail="loginUserEmail"
       @close="closeBoardModal"
     />
+    <ModifyProfilePic
+      v-if="isModifyPicModal"
+      :originPic="imageUrl"
+      @close="closeModifyPicModal"
+    />
+    <ModifyNickname
+      v-if="isModifyNicknameModal"
+      @close="closeModifyNicknameModal"
+    />
   </div>
 </template>
 
@@ -70,6 +79,8 @@
 import axios from "axios";
 import { mapGetters, mapState } from "vuex";
 import BoardModal from "@/views/BoardModal.vue";
+import ModifyProfilePic from "@/views/ModifyProfilePic.vue";
+import ModifyNickname from "@/views/ModifyNickname.vue";
 export default {
   data() {
     return {
@@ -78,6 +89,8 @@ export default {
       isBoardModalOpen: false,
       loginUserEmail: "",
       selectedIndex: null,
+      isModifyPicModal: false,
+      isModifyNicknameModal: false,
     };
   },
   created() {
@@ -88,6 +101,8 @@ export default {
   },
   components: {
     BoardModal,
+    ModifyProfilePic,
+    ModifyNickname,
   },
   computed: {
     ...mapGetters(["isLoginSuccess"]),
@@ -133,8 +148,11 @@ export default {
     closeModal() {
       this.isShowModal = false;
     },
-    goToProfile() {
-      this.$router.push({ name: "InitProfile" });
+    changeNickname() {
+      this.isModifyNicknameModal = true;
+    },
+    changeProfilePic() {
+      this.isModifyPicModal = true;
     },
     async logout() {
       try {
@@ -177,6 +195,12 @@ export default {
     },
     closeBoardModal() {
       this.isBoardModalOpen = false;
+    },
+    closeModifyPicModal() {
+      this.isModifyPicModal = false;
+    },
+    closeModifyNicknameModal() {
+      this.isModifyNicknameModal = false;
     },
   },
 };

@@ -207,7 +207,7 @@ export default {
 #profileImg {
   width: 28px;
   height: 28px;
-  border-radius: 5px;
+  border-radius: 50%;
 }
 #user-nickname {
   margin-left: 15px;

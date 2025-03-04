@@ -39,6 +39,7 @@ public class UserDAOImpl implements UserDAO{
 		return ses.selectOne(NS+"login", loginDTO);
 	}
 
+	@Override
 	public String checkEmail(String email) {
 		String userEmail = ses.selectOne(NS+"checkEmail", email);
 		if(userEmail == null) {
@@ -48,6 +49,7 @@ public class UserDAOImpl implements UserDAO{
 		}	
 	}
 
+	@Override
 	public List<String> getEmailList(CheckIdDTO idDTO) {
 		List<String> emailList = ses.selectList(NS+"getEmailList", idDTO);
 		if(emailList != null) {
@@ -57,16 +59,19 @@ public class UserDAOImpl implements UserDAO{
 		}
 	}
 
+	@Override
 	public int updatePwd(UpdatePasswordDTO updateDTO) {
 		
 		int result = ses.update(NS+"updatePwd", updateDTO);
 		return result;
 	}
 
+	@Override
 	public UserDTO getInfoByKakao(String email) {
 		return ses.selectOne(NS+"getInfoByKakao", email);
 	}
 
+	@Override
 	public int addProfile(UserProfileDTO profile, String email) {
 		Map<String, Object> args = new HashMap<String, Object>();
 		args.put("nickName", profile.getNickName());
@@ -75,6 +80,7 @@ public class UserDAOImpl implements UserDAO{
 		return ses.update(NS+"addProfile", args);
 	}
 
+	@Override
 	public UserVO getNickname(String nickname) {
 		UserVO userInfo = ses.selectOne(NS+"getNickname", nickname);
 		if(userInfo != null) {
@@ -84,7 +90,24 @@ public class UserDAOImpl implements UserDAO{
 		}
 	}
 
+	@Override
 	public UserVO getUserInfo(String email) {
 		return ses.selectOne(NS+"getUserInfo", email);
+	}
+
+	@Override
+	public int modifyProfilePic(String email, String imageUrl) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("email", email);
+		args.put("imageUrl", imageUrl);
+		return ses.update(NS+"updateProfilePic", args);
+	}
+
+	@Override
+	public int modifyNickname(String email, String nickname) {
+		Map<String, String> args = new HashMap<String, String>();
+		args.put("email", email);
+		args.put("nickname", nickname);
+		return ses.update(NS+"updateNickname", args);
 	}
 }

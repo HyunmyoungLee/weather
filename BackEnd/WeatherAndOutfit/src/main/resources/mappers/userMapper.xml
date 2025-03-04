@@ -47,4 +47,15 @@
 		SET nickName = #{nickName}, imageUrl = #{profileImageUrl}
 		WHERE email = #{email}
 	</update>
+	<update id="updateProfilePic">
+		UPDATE USER
+		SET imageUrl = #{imageUrl}
+		WHERE email = #{email}
+	</update>
+	
+	<update id="updateNickname">
+		UPDATE USER
+		SET nickname = #{nickname}
+		WHERE email = #{email}
+	</update>
 </mapper>

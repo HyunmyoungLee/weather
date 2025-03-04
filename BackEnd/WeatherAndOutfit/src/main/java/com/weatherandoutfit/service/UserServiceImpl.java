@@ -47,24 +47,24 @@ public class UserServiceImpl implements UserService {
 		log.info("service LoginInfo  {} ", loginDTO.toString());
 		return userDao.login(loginDTO);
 	}
-
+	@Override
 	public String checkEmail(String email) {
 		
 		return userDao.checkEmail(email);
 	}
-
+	@Override
 	public List<String> getEmailList(CheckIdDTO idDTO) {
 		return userDao.getEmailList(idDTO);
 	}
-
+	@Override
 	public int updatePassword(UpdatePasswordDTO updateDTO) {
 		return userDao.updatePwd(updateDTO);
 	}
-
+	@Override
 	public UserDTO getInfoByKakao(String email) {
 		return userDao.getInfoByKakao(email);
 	}
-
+	@Override
 	public UserVO addProfile(UserProfileDTO profile, MultipartFile file, String email) {
 		String imageUrl = null;
 		try {
@@ -86,13 +86,34 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	}
-
+	@Override
 	public UserVO getNickname(String nickname) {
 		return userDao.getNickname(nickname);
 	}
-
+	@Override
 	public UserVO getUserInfo(String email) {
 		return userDao.getUserInfo(email);
+	}
+
+	@Override
+	public int modfiyProfilePic(String email, MultipartFile file) {
+		String imageUrl = null;
+		try {
+			if(!file.getOriginalFilename().isEmpty()) {
+				imageUrl = s3Service.uploadFile(file, true);
+			} else {
+				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/userProfile/user.png";
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		int result = userDao.modifyProfilePic(email,imageUrl);
+		return result;
+	}
+
+	@Override
+	public int modifyNickname(String email, String nickname) {
+		return userDao.modifyNickname(email,nickname);
 	}
 
 }

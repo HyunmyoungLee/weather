@@ -252,4 +252,29 @@ public class UserController {
 		UserVO user = service.getUserInfo(email);
 		return ResponseEntity.ok(user);
 	}
+	
+	@PutMapping(value="/modifyProfilePic", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> modifyProfilePic(@RequestParam("file") MultipartFile file, HttpSession session){
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		if(userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+		String email = userSession.getEmail();
+		if(file == null) {
+			file = new MockMultipartFile("file", new byte[0]);
+		}
+		int result = service.modfiyProfilePic(email,file);
+		return ResponseEntity.ok(result == 1 ? "프로필 사진 변경 완료" : "프로필 사진 변경 실패");
+	}
+	@PutMapping(value="/modifyNickname", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> modifyNickname(@RequestBody Map<String,String> request, HttpSession session){
+		UserDTO userSession = (UserDTO) session.getAttribute("user");
+		if(userSession == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_MESSAGE);
+		}
+		String email = userSession.getEmail();
+		String nickname = request.get("nickname");
+		int result = service.modifyNickname(email,nickname);
+		return ResponseEntity.ok(result == 1 ? "닉네임 변경 완료" : "닉네임 변경 실패");
+	}
 }
