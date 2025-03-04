@@ -120,5 +120,23 @@ public class BoardDAOImpl implements BoardDAO {
 	public int deleteLikedBoard(LikedBoardDTO likedBoard) {
 		return ses.delete(NS+"deleteLikedBoard", likedBoard);
 	}
+
+	@Override
+	public int updateBoardLike(LikedBoardDTO likedBoard, Boolean flag) {
+		if(flag == true) {
+			return ses.update(NS+"increaseLikedBoard", likedBoard);
+		} else {
+			return ses.update(NS+"decreaseLikedBoard", likedBoard);			
+		}
+	}
+
+	@Override
+	public List<BoardVO> getMyBoardList(String email) {
+		List<BoardVO> boardList = ses.selectList(NS+"getMyBoard", email);
+		if(boardList == null) {
+			return new ArrayList<BoardVO>(); 
+		}
+		return boardList;
+	}
 	
 }

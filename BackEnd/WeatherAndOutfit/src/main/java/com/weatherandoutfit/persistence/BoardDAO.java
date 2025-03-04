@@ -1,7 +1,6 @@
 package com.weatherandoutfit.persistence;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.weatherandoutfit.domain.BoardDTO;
@@ -28,5 +27,9 @@ public interface BoardDAO {
 	int addLikedBoard(LikedBoardDTO likedBoard);
 
 	int deleteLikedBoard(LikedBoardDTO likedBoard);
+
+	int updateBoardLike(LikedBoardDTO likedBoard, Boolean flag);
+
+	List<BoardVO> getMyBoardList(String email);
 
 }

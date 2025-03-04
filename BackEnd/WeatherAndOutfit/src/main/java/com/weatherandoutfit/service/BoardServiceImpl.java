@@ -116,13 +116,30 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public int addLikedBoard(LikedBoardDTO likedBoard) {
-		return boardDAO.addLikedBoard(likedBoard);
+		int result = boardDAO.addLikedBoard(likedBoard);
+		if(result == 1) {
+			return  boardDAO.updateBoardLike(likedBoard, true);
+		} else {			
+			return  0;
+		}
 	}
 
 	@Override
+	@Transactional
 	public int deleteLikedBoard(LikedBoardDTO likedBoard) {
-		return boardDAO.deleteLikedBoard(likedBoard);
+		int result = boardDAO.deleteLikedBoard(likedBoard);
+		if(result == 1) {
+			return boardDAO.updateBoardLike(likedBoard, false);
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public List<BoardVO> getMyBoardList(String email) {
+		return boardDAO.getMyBoardList(email);
 	}
 
 }

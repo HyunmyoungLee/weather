@@ -1,6 +1,5 @@
 package com.weatherandoutfit.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -20,4 +19,5 @@ public interface BoardService {
 	Boolean getLikedBoard(int boardId, String email);
 	int addLikedBoard(LikedBoardDTO likedBoard);
 	int deleteLikedBoard(LikedBoardDTO likedBoard);
+	List<BoardVO> getMyBoardList(String email);
 }

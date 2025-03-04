@@ -157,14 +157,10 @@ export default {
           .get(`http://localhost:8081/board/getBoard?${params.toString()}`)
           .then((res) => {
             console.log(res);
-            if (res.data) {
+            if (res.data != "") {
               this.userData = res.data;
-              for (let i = 0; i < res.data.length; i++) {
-                this.imageList.push(res.data[i].imageUrl);
-                this.nicknameList.push(res.data[i].nickName);
-                this.profileImages.push(res.data[i].profileImg);
-                this.createdDates.push(res.data[i].createdDate);
-              }
+            } else {
+              this.userData = [];
             }
           });
         console.log(this.imageList);
@@ -205,6 +201,16 @@ export default {
     },
     nextModal() {
       this.expandedModal = true;
+    },
+    sortBy(orderMethod) {
+      if (orderMethod === "recommand") {
+        this.userData.sort((a, b) => b.numOfLike - a.numOfLike);
+        console.log(this.userData);
+      } else if (orderMethod === "newest") {
+        this.userData.sort(
+          (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+        );
+      }
     },
     formattedDate(postDate) {
       const now = new Date();

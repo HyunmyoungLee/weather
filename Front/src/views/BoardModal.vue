@@ -91,6 +91,8 @@ export default {
     },
 
     async likePost() {
+      const post = this.userData[this.selectedIndex];
+      const originalLikeCount = post.numOfLike;
       try {
         const infos = {
           email: this.loginUserEmail,
@@ -101,6 +103,7 @@ export default {
             .post("http://localhost:8081/board/addLikedBoard", infos)
             .then((res) => {
               console.log(res);
+              post.numOfLike += 1;
             });
         } else {
           await axios
@@ -109,10 +112,12 @@ export default {
             })
             .then((res) => {
               console.log(res);
+              post.numOfLike -= 1;
             });
         }
       } catch (error) {
         console.error(error);
+        post.numOfLike = originalLikeCount;
       }
       this.isLiked = !this.isLiked;
     },

@@ -80,4 +80,24 @@
 		DELETE FROM likedboard
 		WHERE email = #{email} and boardId = #{boardId}
 	</delete>
+	
+	<update id="increaseLikedBoard">
+		UPDATE BOARD
+		SET numOfLike = numOfLike + 1
+		WHERE boardId = #{boardId} 
+	</update>
+	
+	<update id="decreaseLikedBoard">
+		UPDATE BOARD
+		SET numOfLike = numOfLike - 1
+		WHERE boardId = #{boardId} 
+	</update>
+	
+	<select id="getMyBoard" resultType="com.weatherandoutfit.domain.BoardVO">
+		SELECT b.*,  u.gender, u.nickName, u.birthdate, u.imageUrl as profileImg, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age
+		FROM BOARD b 
+		INNER JOIN User u
+		ON b.email = u.email 
+		WHERE b.email = #{email}
+	</select>
 </mapper>

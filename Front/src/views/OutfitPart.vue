@@ -115,8 +115,8 @@
       </div>
     </div>
     <div class="orderMethods">
-      <a>추천순</a>
-      <a>최신순</a>
+      <a @click="sortBy('recommand')">추천순</a>
+      <a @click="sortBy('newest')">최신순</a>
     </div>
     <div
       class="image-list"
@@ -124,23 +124,19 @@
     >
       <div
         class="item"
-        v-for="(image, index) in imageList"
+        v-for="(user, index) in userData"
         :key="index"
         @click="showBoardModal(index)"
       >
-        <img class="main-img" :src="image" alt="" />
+        <img class="main-img" :src="user.imageUrl" alt="" />
         <div class="item-footer">
           <div class="userInfo">
-            <img
-              class="profile-img"
-              :src="profileImages[index]"
-              alt="Profile"
-            />
+            <img class="profile-img" :src="user.profileImg" alt="Profile" />
             <p class="nickname">
-              {{ nicknameList[index] }}
+              {{ user.nickName }}
             </p>
           </div>
-          <p class="timestamp">{{ formattedDate(createdDates[index]) }}</p>
+          <p class="timestamp">{{ formattedDate(user.createdDate) }}</p>
         </div>
       </div>
     </div>

@@ -149,11 +149,14 @@ export default {
   justify-content: space-between;
 }
 
-.loginImage .userImage {
-  width: 25px;
-  height: 25px;
+.loginImage,
+.userImage {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   margin-right: auto;
   cursor: pointer;
+  object-fit: contain;
 }
 
 .loginImage:hover,

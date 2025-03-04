@@ -102,6 +102,17 @@ public class BoardController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
 	}
+	@GetMapping(value="/getMyBoard", produces = "application/json;charset=UTF-8")
+	public ResponseEntity<Object> getMyBoard(HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		if(session == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 정보가 없습니다");
+		}
+		UserDTO user = (UserDTO) session.getAttribute("user");
+		String email = user.getEmail();
+		List<BoardVO> boardList = boardService.getMyBoardList(email);
+		return ResponseEntity.ok(boardList);
+	}
 	
 	@GetMapping(value="/getLikedBoard",  produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> getLikedBoard(@RequestParam("boardId") int boardId, @RequestParam("email")String email){
