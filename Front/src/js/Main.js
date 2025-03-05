@@ -28,11 +28,6 @@ export default {
   },
   created() {
     this.checkLogin();
-    console.log(
-      "현재 프로필 상태",
-      this.$store.state.nickname,
-      this.$store.state.imageUrl
-    );
   },
 
   methods: {
@@ -41,16 +36,11 @@ export default {
         .get("http://localhost:8081/user/status", {})
         .then((response) => {
           if (response.data.name != null) {
-            console.log("로그인 유저 정보  : ", response.data);
             this.loginUserEmail = response.data.email;
-          } else {
-            console.log("오류");
           }
         })
         .catch((err) => {
-          if (err.status == 401) {
-            console.log("로그인 정보가 없습니다");
-          }
+          console.error(err);
         });
     },
     async fetchWeather(city) {
@@ -59,7 +49,6 @@ export default {
           params: { city: city.name },
         })
         .then((res) => {
-          console.log(res);
           this.weatherInfo = res.data;
           this.outfitPart = true;
           this.lat = res.data.coord.lat;
@@ -74,7 +63,6 @@ export default {
           params: { city: city.name },
         })
         .then((res) => {
-          console.log(res);
           this.forecastInfo = res.data.list;
         })
         .catch((err) => {
@@ -117,7 +105,7 @@ export default {
         });
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
-        alert(`위도 : ${this.lat}, 경도 : ${this.lon}`);
+
         this.setLocationByCoordinates();
         await this.fetchWeatherByCoordinates(this.lat, this.lon);
       } catch (error) {
@@ -131,7 +119,6 @@ export default {
           params: { lat: lat, lon: lon },
         })
         .then((res) => {
-          console.log(res);
           this.weatherInfo = res.data;
           this.outfitPart = true;
         })
@@ -143,7 +130,6 @@ export default {
           params: { lat: lat, lon: lon },
         })
         .then((res) => {
-          console.log(res);
           this.forecastInfo = res.data.list;
         })
         .catch((err) => {
@@ -152,13 +138,9 @@ export default {
     },
 
     setLocationByCoordinates() {
-      console.log(`user location : lat=${this.lat} lon = ${this.lon}`);
       for (let location in this.locationMapping) {
         const { latMin, latMax, lonMin, lonMax } =
           this.locationMapping[location];
-        console.log(
-          `checking ${location} : lat(${latMin}-${latMax}), lon${lonMin}-${lonMax}`
-        );
 
         if (
           this.lat >= latMin &&

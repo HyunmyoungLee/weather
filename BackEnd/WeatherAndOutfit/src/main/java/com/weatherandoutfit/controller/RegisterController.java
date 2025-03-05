@@ -50,9 +50,7 @@ public class RegisterController {
 	
 	@PostMapping(value =  "/sendAuthCode", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> sendAuthCode(@ModelAttribute EmailDTO email){
-		log.info("{}" , email.getEmail());
 		String validEmail = email.getEmail();
-		log.info(validEmail);
 		String authCode = mailService.setEmail(validEmail);
 		log.info(authCode);
 		return ResponseEntity.ok(authCode);
@@ -71,7 +69,6 @@ public class RegisterController {
 	
 	@PostMapping(value = "/register",  produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> userRegister(@RequestBody UserDTO user){
-		log.info("{}", user);
 		int registUser = 0;
 		try {
 			registUser = service.registUser(user);

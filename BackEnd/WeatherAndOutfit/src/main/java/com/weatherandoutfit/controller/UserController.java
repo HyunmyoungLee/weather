@@ -60,7 +60,6 @@ public class UserController {
 	@PostMapping(value = "/login", produces ="application/json;charset=UTF-8")
 	public ResponseEntity<Object> userLogin(@RequestBody UserLoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response){
 			Map<String, String>loginResponse = new HashMap<String, String>();
-			log.info("{}",loginDTO.toString());
 			UserDTO loginInfo = service.login(loginDTO);
 			if(loginInfo != null) {
 				HttpSession session = request.getSession(true);
@@ -129,14 +128,12 @@ public class UserController {
 	
 	@GetMapping(value="/checkId", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> checkId(@ModelAttribute CheckIdDTO idDTO){
-		log.info(idDTO.toString());
 		List<String> emailList = service.getEmailList(idDTO);
 		return ResponseEntity.ok(emailList);
 	}
 	
 	@PutMapping(value="/setNewPassword", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> setPassword(@RequestBody UpdatePasswordDTO updateDTO){
-		log.info("{}", updateDTO.toString());
 		int result = service.updatePassword(updateDTO);
 		if(result == 1) {
 				return ResponseEntity.ok("비밀번호가 변경되었습니다 로그인해주세요");
@@ -225,10 +222,8 @@ public class UserController {
 	
 	@PostMapping(value = "/addProfile", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object> addProfile(@RequestPart("userProfile") UserProfileDTO profile, @RequestPart(value = "file", required = false) MultipartFile file, HttpSession session){
-		log.info("{},{}", profile, file);
 		UserDTO userSession = (UserDTO) session.getAttribute("user");
 		String email = userSession.getEmail();
-		log.info(email);
 		if(file == null) {
 			file = new MockMultipartFile("file", new byte[0]);
 		}

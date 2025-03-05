@@ -50,15 +50,12 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int deletePost(int boardId) {
 		BoardVO board = boardDAO.getBoardInfo(boardId);
-		log.info(board.toString());
 		String email = board.getEmail();
 		
 		int result = boardDAO.deletePost(boardId, email);
-		log.info("{}", result);
 		if(result == 1) {
 			String imageFile = board.getImageUrl();
 			String fileName = getS3Path(imageFile);
-			log.info("{}", fileName);
 			if(!fileName.equals("no_image.jpg")) {
 				s3Service.deleteFile(fileName);							
 			}
@@ -73,6 +70,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public int updatePost(int boardId, BoardDTO board, MultipartFile file) {
 		BoardVO originBoard = boardDAO.getBoardInfo(boardId);
 		int result  = 0;
@@ -101,7 +99,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public List<BoardVO> getBoardList(String location, List<String> genders, List<String> ages,
 			String period) {
-		log.info("boardList 동작");
 		List<BoardVO> boardList = boardDAO.getBoardList(location, genders, ages, period);
 		return boardList;
 	}

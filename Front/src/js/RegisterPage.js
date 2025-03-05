@@ -47,18 +47,13 @@ export default {
     script.async = true;
     script.onload = () => {
       this.isPostCodeLoaded = true;
-      console.log("daum postcode script loaded successfully");
     };
-    script.onerror = () => {
-      console.log("Failed to load Daum postcode script");
-    };
+    script.onerror = () => {};
     document.head.appendChild(script);
   },
   methods: {
     //이메일 인증코드 발송
     async sendAuthCode() {
-      console.log("check valid email : ", this.userInfo.email);
-
       try {
         await axios
           .post(
@@ -99,7 +94,6 @@ export default {
 
     //인증번호 확인
     async checkAuthCode() {
-      console.log(this.userInfo.authNumber);
       try {
         await axios
           .get("http://localhost:8081/user/checkAuthCode", {
@@ -109,7 +103,6 @@ export default {
             },
           })
           .then((res) => {
-            console.log(res);
             alert(res.data);
             this.authErrorMessage = "";
             this.showAuthInput = false;
@@ -126,7 +119,6 @@ export default {
 
     //이메일 중복 확인
     async checkDuplicateEmail() {
-      console.log("check email", this.userInfo.email);
       try {
         await axios
           .get("http://localhost:8081/user/checkEmail", {
@@ -152,9 +144,6 @@ export default {
 
     //최종 회원가입 등록
     async registerUser() {
-      console.log("유저 주소지 : ", this.userInfo.address);
-      console.log("코드 유효성 검사 :", this.validCode);
-
       if (this.checkValidBirthdate() && this.checkValidCode()) {
         try {
           await axios
@@ -163,8 +152,7 @@ export default {
                 "Content-Type": "application/json",
               },
             })
-            .then((response) => {
-              console.log(response);
+            .then(() => {
               this.errorMessage = "";
               alert("회원가입이 성공적으로 완료되었습니다");
               this.validCode = false;
@@ -189,9 +177,7 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.status == 401) {
-            console.log("로그인 정보가 없습니다");
-          }
+          console.error(err);
         });
     },
 

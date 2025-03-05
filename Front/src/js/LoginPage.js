@@ -32,9 +32,7 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.status == 401) {
-            console.log("로그인 정보가 없습니다");
-          }
+          console.error(err);
         })
         .finally(() => {
           setTimeout(() => {
@@ -43,8 +41,6 @@ export default {
         });
     },
     async login() {
-      console.log(this.email, this.password);
-
       try {
         const response = await axios.post(
           "http://localhost:8081/user/login",
@@ -52,7 +48,6 @@ export default {
           { headers: { "Content-Type": "application/json" } }
         );
         if (response.status === 200) {
-          console.log(response.data);
           this.isLoading = true;
           const redirectUrl = response.data.redirectUrl;
           this.userProfile.nickname = response.data.nickname;

@@ -11,7 +11,7 @@
           <img
             id="profileImg"
             :src="userData[selectedIndex].profileImg"
-            alt=""
+            alt="profileImage"
           />
           <p id="user-nickname">{{ userData[selectedIndex].nickName }}</p>
           <p id="user-age">
@@ -20,6 +20,13 @@
           <p id="user-gender">
             {{ userData[selectedIndex].gender == "male" ? "남" : "여" }}
           </p>
+          <img
+            v-if="isOwnedPost"
+            id="option-img"
+            src="@/images/option.png"
+            alt="option"
+            @click="showOptionModal"
+          />
         </div>
         <div class="content-area">
           <p>
@@ -50,102 +57,17 @@
         </div>
       </div>
     </div>
+    <div v-if="isShowOptionModal" class="option-modal" @click="closeModal">
+      <div class="option-modal-content" @click.stop>
+        <p @click="deleteBoard">게시물 삭제</p>
+        <button @click="closeModal">닫기</button>
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import axios from "axios";
-export default {
-  data() {
-    return {
-      isLiked: false,
-    };
-  },
-  props: {
-    selectedIndex: Number,
-    userData: Array,
-    loginUserEmail: String,
-  },
-  created() {
-    this.checkUserLikedPost();
-  },
-  methods: {
-    async checkUserLikedPost() {
-      try {
-        await axios
-          .get("http://localhost:8081/board/getLikedBoard", {
-            params: {
-              boardId: this.userData[this.selectedIndex].boardId,
-              email: this.loginUserEmail,
-            },
-          })
-          .then((res) => {
-            if (res.data === true) {
-              this.isLiked = true;
-            } else {
-              this.isLiked = false;
-            }
-          });
-      } catch (err) {
-        console.error(err);
-      }
-    },
-
-    async likePost() {
-      const post = this.userData[this.selectedIndex];
-      const originalLikeCount = post.numOfLike;
-      try {
-        const infos = {
-          email: this.loginUserEmail,
-          boardId: this.userData[this.selectedIndex].boardId,
-        };
-        if (!this.isLiked) {
-          await axios
-            .post("http://localhost:8081/board/addLikedBoard", infos)
-            .then((res) => {
-              console.log(res);
-              post.numOfLike += 1;
-            });
-        } else {
-          await axios
-            .delete("http://localhost:8081/board/deleteLikedBoard", {
-              data: infos,
-            })
-            .then((res) => {
-              console.log(res);
-              post.numOfLike -= 1;
-            });
-        }
-      } catch (error) {
-        console.error(error);
-        post.numOfLike = originalLikeCount;
-      }
-      this.isLiked = !this.isLiked;
-    },
-    getUserAge(birthdate) {
-      const today = new Date();
-      const userBirthdate = new Date(birthdate);
-
-      let age = today.getFullYear() - userBirthdate.getFullYear();
-      const checkBirthdate =
-        today.getMonth() > userBirthdate.getMonth() ||
-        (today.getMonth() === userBirthdate.getMonth() &&
-          today.getMonth() >= userBirthdate.getMonth());
-      if (!checkBirthdate) age--;
-      return age;
-    },
-    formattedCreatedDate(createdDate) {
-      const postDate = new Date(createdDate);
-      let formatDate =
-        postDate.getFullYear() +
-        "년 " +
-        postDate.getMonth() +
-        "월 " +
-        postDate.getDate() +
-        "일";
-      return formatDate;
-    },
-  },
-};
+import BoardModalJS from "@/js/BoardModal.js";
+export default BoardModalJS;
 </script>
 
 <style scoped>
@@ -227,6 +149,13 @@ export default {
   font-size: 13px;
 }
 
+#option-img {
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  margin-right: 10px;
+}
+
 .content-area {
   flex: 1;
   overflow-y: auto;
@@ -259,5 +188,24 @@ export default {
   font-size: 50px;
   cursor: pointer;
   color: white;
+}
+
+.option-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.option-modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 300px;
 }
 </style>

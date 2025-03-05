@@ -84,7 +84,6 @@ export default {
       } else {
         this.file = null;
       }
-      console.log(this.isValidImage);
     },
     async uploadPost() {
       if (this.codeId === 0) {
@@ -104,8 +103,7 @@ export default {
         try {
           await axios
             .post("http://localhost:8081/board/addPost", formData)
-            .then((res) => {
-              console.log("포스팅 데이터 : ", res);
+            .then(() => {
               alert("게시물 등록이 완료되었습니다");
               this.file = null;
               this.codeId = 0;
@@ -122,12 +120,7 @@ export default {
       this.nicknameList = [];
       this.profileImages = [];
       this.createdDates = [];
-      console.log(
-        this.selectedLocation,
-        this.selectedGender,
-        this.selectedAge,
-        this.selectedPeriod
-      );
+
       const genderMap = {
         남성: "male",
         여성: "female",
@@ -156,14 +149,12 @@ export default {
         await axios
           .get(`http://localhost:8081/board/getBoard?${params.toString()}`)
           .then((res) => {
-            console.log(res);
             if (res.data != "") {
               this.userData = res.data;
             } else {
               this.userData = [];
             }
           });
-        console.log(this.imageList);
       } catch (error) {
         console.error("서버 오류로 인한 데이터 로딩 실패");
       }
@@ -188,9 +179,7 @@ export default {
       this.$emit("update:activeIndex", this.locations.indexOf(location));
     },
     showPostModal() {
-      console.log("this 확인 : ", this);
       this.isModalOpen = true;
-      console.log("모달 열기 :", this.isModalOpen);
     },
     closePostModal() {
       this.isModalOpen = false;
@@ -205,7 +194,6 @@ export default {
     sortBy(orderMethod) {
       if (orderMethod === "recommand") {
         this.userData.sort((a, b) => b.numOfLike - a.numOfLike);
-        console.log(this.userData);
       } else if (orderMethod === "newest") {
         this.userData.sort(
           (a, b) => new Date(b.createdDate) - new Date(a.createdDate)

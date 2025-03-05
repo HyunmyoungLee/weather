@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.weatherandoutfit.domain.UserLoginDTO;
@@ -96,11 +97,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public int modfiyProfilePic(String email, MultipartFile file) {
 		String imageUrl = null;
+		UserVO userInfo = userDao.getUserInfo(email);
+		String originImageUrl = userInfo.getImageUrl();
+		String s3Path = getS3Path(originImageUrl);
 		try {
 			if(!file.getOriginalFilename().isEmpty()) {
 				imageUrl = s3Service.uploadFile(file, true);
+				if(imageUrl != null && !s3Path.equals("")) {
+					s3Service.deleteFile(s3Path);					
+				}
 			} else {
 				imageUrl = "https://weatherandoutfit.s3.ap-northeast-2.amazonaws.com/userProfile/user.png";
 			}
@@ -114,6 +122,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int modifyNickname(String email, String nickname) {
 		return userDao.modifyNickname(email,nickname);
+	}
+	
+	private String getS3Path(String imageUrl) {
+		String[] strArray = imageUrl.split("/");
+		String s3Path = strArray[3] +"/" + strArray[4];
+		log.info("s3Path : {}", s3Path);
+		if(s3Path.equals("userProfile/user.png")) {
+			return "";
+		}
+		return s3Path;
 	}
 
 }

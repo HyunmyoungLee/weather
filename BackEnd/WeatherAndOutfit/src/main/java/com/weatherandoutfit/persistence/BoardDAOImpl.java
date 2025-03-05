@@ -90,12 +90,10 @@ public class BoardDAOImpl implements BoardDAO {
 			}
 		}
 		
-		log.info(args.toString());
 		List<BoardVO> boardList  = ses.selectList(NS+"getBoardList", args);
 		if(boardList == null) {
 			boardList  = new ArrayList<BoardVO>();
 		}
-		log.info(" DAO단 boardList : {}", boardList.toString());
 		return boardList;
 	}
 

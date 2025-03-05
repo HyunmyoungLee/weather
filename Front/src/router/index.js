@@ -56,10 +56,6 @@ router.beforeEach(async (to, from, next) => {
   const isLoggedIn = store.getters.isLoginSuccess;
   const hasProfile = store.getters.hasProfile;
 
-  console.log("네비게이션 가드");
-  console.log("로그인 여부 : ", isLoggedIn);
-  console.log("프로필 여부 : ", hasProfile);
-
   if (isLoggedIn && !hasProfile && to.path !== "/initProfile") {
     return next("/initProfile");
   } else {

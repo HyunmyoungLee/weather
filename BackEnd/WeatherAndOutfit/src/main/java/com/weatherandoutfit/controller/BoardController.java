@@ -55,7 +55,6 @@ public class BoardController {
 		String email = userSession.getEmail();
 
 		board.setEmail(email);
-		log.info(board.toString());
 		int result = boardService.addPost(board, file);
 		
 		return result == 1 ? ResponseEntity.ok("업로드 완료") : ResponseEntity.badRequest().body("업로드 실패");
@@ -122,14 +121,12 @@ public class BoardController {
 	
 	@PostMapping(value="/addLikedBoard", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object>addLikedBoard(@RequestBody LikedBoardDTO likedBoard){
-		log.info(likedBoard.toString());
 		int result = boardService.addLikedBoard(likedBoard);
 		return ResponseEntity.ok(result == 1 ? "게시물 좋아요 성공" : "게시물 좋아요 실패");
 	}
 	
 	@DeleteMapping(value="/deleteLikedBoard", produces = "application/json;charset=UTF-8")
 	public ResponseEntity<Object>deleteLikedBoard(@RequestBody LikedBoardDTO likedBoard){
-		log.info(likedBoard.toString());
 		int result = boardService.deleteLikedBoard(likedBoard);
 		
 		return ResponseEntity.ok(result == 1 ? "게시물 좋아요 삭제 성공" : "게시물 좋아요 삭제 실패");

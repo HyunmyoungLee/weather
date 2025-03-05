@@ -29,11 +29,6 @@ export default createStore({
       const loginSuccess = localStorage.getItem("loginSuccess");
       const nickname = localStorage.getItem("nickname");
       const imageUrl = localStorage.getItem("imageUrl");
-      console.log("📝 localStorage 정보:", {
-        loginSuccess,
-        nickname,
-        imageUrl,
-      });
       if (loginSuccess) {
         commit("setLoginSuccess", loginSuccess);
       }
