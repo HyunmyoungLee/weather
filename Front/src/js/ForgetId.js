@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+
 export default {
   data() {
     return {
@@ -48,8 +49,8 @@ export default {
           this.userInfo.birthdate = new Date(this.userInfo.birthdate)
             .toISOString()
             .split("T")[0];
-          await axios
-            .get("http://localhost:8081/user/checkId", {
+          await axiosInstance
+            .get("/user/checkId", {
               params: {
                 name: this.userInfo.name,
                 birthdate: this.userInfo.birthdate,
@@ -69,8 +70,8 @@ export default {
       }
     },
     checkLogin() {
-      axios
-        .get("http://localhost:8081/user/status")
+      axiosInstance
+        .get("/user/status")
         .then((response) => {
           if (response.data.name != null) {
             this.$router.push({ name: "Main" });

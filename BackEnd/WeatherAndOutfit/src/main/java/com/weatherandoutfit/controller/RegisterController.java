@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-@CrossOrigin(origins ="http://localhost:8080")
+@CrossOrigin(origins ="http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com")
 public class RegisterController {
 	
 	@Autowired

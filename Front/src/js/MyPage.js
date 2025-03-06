@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
 import { mapGetters, mapState } from "vuex";
 import BoardModal from "@/views/BoardModal.vue";
 import ModifyProfilePic from "@/views/ModifyProfilePic.vue";
@@ -32,8 +32,8 @@ export default {
   },
   methods: {
     checkLogin() {
-      axios
-        .get("http://localhost:8081/user/status")
+      axiosInstance
+        .get("/user/status")
         .then((res) => {
           if (res.data.name != null) {
             this.loginUserEmail = res.data.email;
@@ -47,14 +47,12 @@ export default {
     },
     async getMyBoard() {
       try {
-        await axios
-          .get("http://localhost:8081/board/getMyBoard")
-          .then((res) => {
-            this.boardList = res.data;
-            this.boardList.sort(
-              (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
-            );
-          });
+        await axiosInstance.get("/board/getMyBoard").then((res) => {
+          this.boardList = res.data;
+          this.boardList.sort(
+            (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
+          );
+        });
       } catch (error) {
         console.error(error);
       }
@@ -76,7 +74,7 @@ export default {
     },
     async logout() {
       try {
-        await axios.post("http://localhost:8081/user/logout").then(() => {
+        await axiosInstance.post("/user/logout").then(() => {
           this.$store.commit("setLoginSuccess", null);
           this.$store.commit("setProfile", { nickname: null, imageUrl: null });
           localStorage.removeItem("loginSuccess");

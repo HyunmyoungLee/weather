@@ -2,38 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.weatherandoutfit.mappers.userMapper">
 	<select id="getUserInfo" resultType="com.weatherandoutfit.domain.UserVO">
-		SELECT * FROM USER
+		SELECT * FROM user
 		WHERE EMAIL = #{email}
 	</select>
 
 	<insert id="registUser">
-		INSERT INTO USER (email, password, name, birthdate, gender, address)
+		INSERT INTO user (email, password, name, birthdate, gender, address)
 		VALUES(#{email}, SHA2(#{password}, 256), #{name},#{birthdate}, #{gender}, #{address})
 	</insert>
 	
 	<select id="login" resultType="com.weatherandoutfit.domain.UserDTO">
-		SELECT * FROM USER
+		SELECT * FROM user
 		WHERE EMAIL = #{email}
 		AND password = SHA2(#{password}, 256)
 	</select>
 	
 	<select id="getInfoByKakao" resultType="com.weatherandoutfit.domain.UserDTO">
-		SELECT * FROM USER
+		SELECT * FROM user
 		WHERE EMAIL = #{email}
 	</select>
 	
 	<select id="checkEmail" resultType="String">
-		SELECT EMAIL FROM USER
+		SELECT EMAIL FROM user
 		WHERE EMAIL = #{email}
 	</select>
 	
 	<select id="getEmailList" resultType="String">
-		SELECT EMAIL FROM USER
+		SELECT EMAIL FROM user
 		WHERE NAME = #{name} and BIRTHDATE = #{birthdate}
 	</select>
 	<select id="getNickname" resultType="com.weatherandoutfit.domain.UserVO">
 		SELECT * 
-		FROM USER
+		FROM user
 		WHERE nickname = #{nickname}
 	</select>
 	
@@ -48,13 +48,13 @@
 		WHERE email = #{email}
 	</update>
 	<update id="updateProfilePic">
-		UPDATE USER
+		UPDATE user
 		SET imageUrl = #{imageUrl}
 		WHERE email = #{email}
 	</update>
 	
 	<update id="updateNickname">
-		UPDATE USER
+		UPDATE user
 		SET nickname = #{nickname}
 		WHERE email = #{email}
 	</update>

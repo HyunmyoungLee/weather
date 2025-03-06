@@ -1,5 +1,6 @@
 import { mapGetters, mapState } from "vuex";
 import cities from "../json/korean_cities.json";
+
 export default {
   name: "AppHeader",
   data() {

@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+
 import qs from "qs";
 export default {
   data() {
@@ -27,8 +28,8 @@ export default {
     },
     async checkEmail() {
       try {
-        await axios
-          .get("http://localhost:8081/user/checkEmail", {
+        await axiosInstance
+          .get("/user/checkEmail", {
             params: {
               email: this.userInfo.email,
             },
@@ -51,11 +52,8 @@ export default {
     async sendAuthCode() {
       if (this.validEmail) {
         try {
-          await axios
-            .post(
-              "http://localhost:8081/user/sendAuthCode",
-              qs.stringify(this.userInfo)
-            )
+          await axiosInstance
+            .post("/user/sendAuthCode", qs.stringify(this.userInfo))
             .then(() => {
               alert("인증번호가 전송되었습니다 메일을 확인해주세요");
               this.showAuthInput = true;
@@ -68,8 +66,8 @@ export default {
     },
     async checkAuthCode() {
       try {
-        await axios
-          .get("http://localhost:8081/user/checkAuthCode", {
+        await axiosInstance
+          .get("/user/checkAuthCode", {
             params: {
               email: this.userInfo.email,
               authNumber: this.userInfo.authNumber,
@@ -89,8 +87,8 @@ export default {
     },
     async setNewPassword() {
       if (this.matchPassword() && this.validPassword()) {
-        await axios
-          .put("http://localhost:8081/user/setNewPassword", {
+        await axiosInstance
+          .put("/user/setNewPassword", {
             email: this.userInfo.email,
             password: this.pwd1,
           })
@@ -105,8 +103,8 @@ export default {
       }
     },
     checkLogin() {
-      axios
-        .get("http://localhost:8081/user/status")
+      axiosInstance
+        .get("/user/status")
         .then((response) => {
           if (response.data.name != null) {
             this.$router.push({ name: "Main" });

@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int registUser(UserDTO user) {
-		log.info("Service loading...");
 		String msg = new RegisterValidator().batchValidate(user);
 		if(!msg.equals("success")) {
 			throw new ValidationException(msg);
@@ -45,7 +44,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDTO login(UserLoginDTO loginDTO) {
-		log.info("service LoginInfo  {} ", loginDTO.toString());
 		return userDao.login(loginDTO);
 	}
 	@Override

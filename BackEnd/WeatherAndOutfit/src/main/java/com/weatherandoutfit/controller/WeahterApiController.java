@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/weather")
 @Slf4j
 @PropertySource("classpath:weather.properties")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com")
 public class WeahterApiController {
 	@Value("${openweathermap.api.key}")
 	private String apiKey;

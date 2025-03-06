@@ -17,7 +17,7 @@
 	</delete>
 	
 	<update id="updateBoard">
-		UPDATE BOARD
+		UPDATE board
 		SET title = #{title}, content = #{content}, imageUrl = #{imageUrl}, createdDate = now()
 		WHERE boardId = #{boardId} and email = #{email}  
 	</update>
@@ -68,12 +68,12 @@
 		
 	</select>
 	<select id="getLikedBoard" resultType="com.weatherandoutfit.domain.LikedBoardVO">
-		SELECT * FROM LIKEDBOARD
+		SELECT * FROM likedboard
 		WHERE email = #{email} and boardId = #{boardId}
 	</select>
 	
 	<insert id="addLikedBoard">
-	INSERT INTO LIKEDBOARD(email, boardId) VALUES(#{email}, #{boardId})
+	INSERT INTO likedboard(email, boardId) VALUES(#{email}, #{boardId})
 	</insert>
 	
 	<delete id="deleteLikedBoard">
@@ -82,21 +82,21 @@
 	</delete>
 	
 	<update id="increaseLikedBoard">
-		UPDATE BOARD
+		UPDATE board
 		SET numOfLike = numOfLike + 1
 		WHERE boardId = #{boardId} 
 	</update>
 	
 	<update id="decreaseLikedBoard">
-		UPDATE BOARD
+		UPDATE board
 		SET numOfLike = numOfLike - 1
 		WHERE boardId = #{boardId} 
 	</update>
 	
 	<select id="getMyBoard" resultType="com.weatherandoutfit.domain.BoardVO">
 		SELECT b.*,  u.gender, u.nickName, u.birthdate, u.imageUrl as profileImg, TIMESTAMPDIFF(YEAR, u.birthdate, curdate()) as age
-		FROM BOARD b 
-		INNER JOIN User u
+		FROM board b 
+		INNER JOIN user u
 		ON b.email = u.email 
 		WHERE b.email = #{email}
 	</select>

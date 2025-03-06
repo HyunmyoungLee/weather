@@ -1,7 +1,7 @@
 import { createStore } from "vuex";
-import axios from "axios";
 import router from "@/router";
-
+import axiosInstance from "@/js/AxiosSetting.js";
+axiosInstance.defaults.withCredentials = true;
 export default createStore({
   state: {
     loginSuccess: localStorage.getItem("loginSuccess") || null,
@@ -38,11 +38,10 @@ export default createStore({
       }
     },
     async initLoginStatus({ commit }) {
-      await axios
-        .get("http://localhost:8081/user/info", {
-          withCredentials: true,
-        })
+      await axiosInstance
+        .get("/user/info")
         .then((res) => {
+          console.log(res);
           if (res.data.name) {
             commit("setLoginSuccess", res.data.name);
             commit("setProfile", {

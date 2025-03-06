@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+
 export default {
   data() {
     return {
@@ -19,8 +20,8 @@ export default {
   methods: {
     async checkUserLikedPost() {
       try {
-        await axios
-          .get("http://localhost:8081/board/getLikedBoard", {
+        await axiosInstance
+          .get("/board/getLikedBoard", {
             params: {
               boardId: this.userData[this.selectedIndex].boardId,
               email: this.loginUserEmail,
@@ -46,8 +47,8 @@ export default {
     },
     async deleteBoard() {
       try {
-        await axios
-          .delete("http://localhost:8081/board/deletePost", {
+        await axiosInstance
+          .delete("/board/deletePost", {
             params: {
               boardId: this.userData[this.selectedIndex].boardId,
             },
@@ -70,14 +71,12 @@ export default {
           boardId: this.userData[this.selectedIndex].boardId,
         };
         if (!this.isLiked) {
-          await axios
-            .post("http://localhost:8081/board/addLikedBoard", infos)
-            .then(() => {
-              post.numOfLike += 1;
-            });
+          await axiosInstance.post("/board/addLikedBoard", infos).then(() => {
+            post.numOfLike += 1;
+          });
         } else {
-          await axios
-            .delete("http://localhost:8081/board/deleteLikedBoard", {
+          await axiosInstance
+            .delete("/board/deleteLikedBoard", {
               data: infos,
             })
             .then(() => {

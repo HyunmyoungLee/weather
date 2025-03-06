@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+
 export default {
   data() {
     return {
@@ -9,8 +10,8 @@ export default {
   },
   methods: {
     async checkValidateNickname() {
-      await axios
-        .get("http://localhost:8081/user/checkNickname", {
+      await axiosInstance
+        .get("/user/checkNickname", {
           params: {
             nickname: this.nickname,
           },
@@ -30,8 +31,8 @@ export default {
         });
     },
     async modifyNickname() {
-      await axios
-        .put("http://localhost:8081/user/modifyNickname", {
+      await axiosInstance
+        .put("/user/modifyNickname", {
           nickname: this.nickname,
         })
         .then((res) => {

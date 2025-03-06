@@ -1,5 +1,6 @@
 import Header from "@/views/Header.vue";
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+axiosInstance.defaults.withCredentials = true;
 import { locations, locationMapping } from "@/js/location_mapping.js";
 import OutfitPart from "@/views/OutfitPart.vue";
 
@@ -32,8 +33,8 @@ export default {
 
   methods: {
     checkLogin() {
-      axios
-        .get("http://localhost:8081/user/status", {})
+      axiosInstance
+        .get("/user/status", {})
         .then((response) => {
           if (response.data.name != null) {
             this.loginUserEmail = response.data.email;
@@ -44,8 +45,8 @@ export default {
         });
     },
     async fetchWeather(city) {
-      await axios
-        .get("http://localhost:8081/api/weather/city", {
+      await axiosInstance
+        .get("/api/weather/city", {
           params: { city: city.name },
         })
         .then((res) => {
@@ -58,8 +59,8 @@ export default {
         .catch((err) => {
           console.error(err);
         });
-      await axios
-        .get("http://localhost:8081/api/weather/forecast/city", {
+      await axiosInstance
+        .get("/api/weather/forecast/city", {
           params: { city: city.name },
         })
         .then((res) => {
@@ -114,8 +115,8 @@ export default {
       }
     },
     async fetchWeatherByCoordinates(lat, lon) {
-      await axios
-        .get("http://localhost:8081/api/weather/coordinate", {
+      await axiosInstance
+        .get("/api/weather/coordinate", {
           params: { lat: lat, lon: lon },
         })
         .then((res) => {
@@ -125,8 +126,8 @@ export default {
         .catch((err) => {
           console.error(err);
         });
-      await axios
-        .get("http://localhost:8081/api/weather/forecast/coordinate", {
+      await axiosInstance
+        .get("/api/weather/forecast/coordinate", {
           params: { lat: lat, lon: lon },
         })
         .then((res) => {

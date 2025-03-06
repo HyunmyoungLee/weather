@@ -1,5 +1,5 @@
-import axios from "axios";
-axios.defaults.withCredentials = true;
+import axiosInstance from "@/js/AxiosSetting.js";
+axiosInstance.defaults.withCredentials = true;
 export default {
   data() {
     return {
@@ -21,15 +21,15 @@ export default {
   computed: {},
   methods: {
     checkLogin() {
-      axios.get("http://localhost:8081/user/status").catch((err) => {
+      axiosInstance.get("/user/status").catch((err) => {
         if (err.status == 401) {
           this.$router.push({ name: "Main" });
         }
       });
     },
     async checkValidateNickname() {
-      await axios
-        .get("http://localhost:8081/user/checkNickname", {
+      await axiosInstance
+        .get("/user/checkNickname", {
           params: {
             nickname: this.nickname,
           },
@@ -92,8 +92,8 @@ export default {
         formData.append("file", this.file);
       }
 
-      await axios
-        .post("http://localhost:8081/user/addProfile", formData)
+      await axiosInstance
+        .post("/user/addProfile", formData)
         .then((res) => {
           alert("프로필 등록이 완료되었습니다");
           this.$store.commit("setProfile", {

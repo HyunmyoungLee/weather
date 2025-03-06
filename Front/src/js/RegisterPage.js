@@ -1,4 +1,5 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
+
 import qs from "qs";
 
 export default {
@@ -55,11 +56,8 @@ export default {
     //이메일 인증코드 발송
     async sendAuthCode() {
       try {
-        await axios
-          .post(
-            "http://localhost:8081/user/sendAuthCode",
-            qs.stringify(this.userInfo)
-          )
+        await axiosInstance
+          .post("/user/sendAuthCode", qs.stringify(this.userInfo))
           .then((res) => {
             console.log(res);
             alert("인증번호가 전송되었습니다 메일을 확인해주세요");
@@ -95,8 +93,8 @@ export default {
     //인증번호 확인
     async checkAuthCode() {
       try {
-        await axios
-          .get("http://localhost:8081/user/checkAuthCode", {
+        await axiosInstance
+          .get("/user/checkAuthCode", {
             params: {
               email: this.userInfo.email,
               authNumber: this.userInfo.authNumber,
@@ -120,8 +118,8 @@ export default {
     //이메일 중복 확인
     async checkDuplicateEmail() {
       try {
-        await axios
-          .get("http://localhost:8081/user/checkEmail", {
+        await axiosInstance
+          .get("/user/checkEmail", {
             params: {
               email: this.userInfo.email,
             },
@@ -146,8 +144,8 @@ export default {
     async registerUser() {
       if (this.checkValidBirthdate() && this.checkValidCode()) {
         try {
-          await axios
-            .post("http://localhost:8081/user/register", this.userInfo, {
+          await axiosInstance
+            .post("/user/register", this.userInfo, {
               headers: {
                 "Content-Type": "application/json",
               },
@@ -169,8 +167,8 @@ export default {
 
     //로그인 상태 여부 확인
     checkLogin() {
-      axios
-        .get("http://localhost:8081/user/status")
+      axiosInstance
+        .get("/user/status")
         .then((response) => {
           if (response.data.name != null) {
             this.$router.push({ name: "Main" });

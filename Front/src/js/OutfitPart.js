@@ -1,7 +1,9 @@
 import { genders, ages, periods } from "@/js/category.js";
 import { mapState } from "vuex";
-import axios from "axios";
-axios.defaults.withCredentials = true;
+
+import axiosInstance from "@/js/AxiosSetting.js";
+axiosInstance.defaults.withCredentials = true;
+
 import defaultImg from "@/images/image.png";
 import BoardModal from "@/views/BoardModal.vue";
 export default {
@@ -101,15 +103,13 @@ export default {
         }
 
         try {
-          await axios
-            .post("http://localhost:8081/board/addPost", formData)
-            .then(() => {
-              alert("게시물 등록이 완료되었습니다");
-              this.file = null;
-              this.codeId = 0;
-              this.content = "";
-              location.href = "/";
-            });
+          await axiosInstance.post("/board/addPost", formData).then(() => {
+            alert("게시물 등록이 완료되었습니다");
+            this.file = null;
+            this.codeId = 0;
+            this.content = "";
+            location.href = "/";
+          });
         } catch (error) {
           alert("서버 오류로 인한 게시물 등록 실패");
         }
@@ -146,8 +146,8 @@ export default {
         params.append("period", "");
       }
       try {
-        await axios
-          .get(`http://localhost:8081/board/getBoard?${params.toString()}`)
+        await axiosInstance
+          .get(`/board/getBoard?${params.toString()}`)
           .then((res) => {
             if (res.data != "") {
               this.userData = res.data;

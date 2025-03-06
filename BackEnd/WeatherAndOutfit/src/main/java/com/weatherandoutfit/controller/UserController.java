@@ -48,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com", allowCredentials = "true")
 public class UserController {
 	
 	private final String UNAUTHORIZED_MESSAGE = "로그인 정보가 없습니다.";
@@ -72,8 +72,9 @@ public class UserController {
 				cookie.setMaxAge(1800); // 30분
 				cookie.setPath("/");
 				cookie.setSecure(false);
+//				cookie.setDomain("ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com"); 
 				response.addCookie(cookie);
-				
+	
 				log.info("Cookie Name: {}", cookie.getName());
 				log.info("Cookie Value: {}", cookie.getValue());
 				log.info("Cookie Path: {}", cookie.getPath());
@@ -145,7 +146,7 @@ public class UserController {
 	@GetMapping(value="/socialLogin", produces = "application/json;charset=UTF-8")
 	public void socialLogin(HttpServletResponse response) throws IOException{
 		String clientId = "dc076dca00ca3b8af8476dea8f16bd60";
-		String redirectUri = "http://localhost:8081/user/kakaoLogin";
+		String redirectUri = "http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com:8081/user/kakaoLogin";
 		String KakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="  + clientId + "&redirect_uri=" + redirectUri;
 		
 		response.sendRedirect(KakaoAuthUrl);
@@ -164,7 +165,7 @@ public class UserController {
 	MultiValueMap< String, String> body = new LinkedMultiValueMap<String, String>();
 	body.add("grant_type", "authorization_code");
 	body.add("client_id", "dc076dca00ca3b8af8476dea8f16bd60");
-	body.add("redirect_uri", "http://localhost:8081/user/kakaoLogin");
+	body.add("redirect_uri", "http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com:8081/user/kakaoLogin");
 	body.add("code", code);
 	
 	String tokenUri = "https://kauth.kakao.com/oauth/token";
@@ -209,13 +210,13 @@ public class UserController {
 		user.put("loginSuccess", userInfoByKakao.getName());
 		session.setAttribute("user", userInfoByKakao);
 		if(userAllInfo.getNickname() == null || userAllInfo.getImageUrl() == null) {
-			redirectHeader.setLocation(URI.create("http://localhost:8080/initProfile"));
+			redirectHeader.setLocation(URI.create("http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com/initProfile"));
 		} else {			
-			redirectHeader.setLocation(URI.create("http://localhost:8080"));
+			redirectHeader.setLocation(URI.create("http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com"));
 		}
 		return ResponseEntity.status(HttpStatus.FOUND).headers(redirectHeader).build();
 	} else {
-		redirectHeader.setLocation(URI.create("http://localhost:8080/register?email=" + (String)responseUserInfo.get("kakao_account").get("email")));
+		redirectHeader.setLocation(URI.create("http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com/register?email=" + (String)responseUserInfo.get("kakao_account").get("email")));
 		return ResponseEntity.status(HttpStatus.FOUND).headers(redirectHeader).build();
 	}
 	}

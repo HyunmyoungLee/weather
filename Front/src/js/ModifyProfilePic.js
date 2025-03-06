@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/js/AxiosSetting.js";
 export default {
   data() {
     return {
@@ -50,8 +50,8 @@ export default {
       formdata.append("file", this.file);
 
       try {
-        await axios
-          .put("http://localhost:8081/user/modifyProfilePic", formdata)
+        await axiosInstance
+          .put("/user/modifyProfilePic", formdata)
           .then((res) => {
             alert(res.data);
             location.href = "/mypage";

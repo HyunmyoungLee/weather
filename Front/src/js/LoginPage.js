@@ -1,5 +1,5 @@
-import axios from "axios";
-axios.defaults.withCredentials = true;
+import axiosInstance from "@/js/AxiosSetting.js";
+axiosInstance.defaults.withCredentials = true;
 
 export default {
   name: "LoginPage",
@@ -24,8 +24,8 @@ export default {
     checkLogin() {
       this.isLoading = true;
 
-      axios
-        .get("http://localhost:8081/user/status")
+      axiosInstance
+        .get("/user/status")
         .then((response) => {
           if (response.data.name != null) {
             this.$router.push({ name: "Main" });
@@ -42,11 +42,12 @@ export default {
     },
     async login() {
       try {
-        const response = await axios.post(
-          "http://localhost:8081/user/login",
+        const response = await axiosInstance.post(
+          "/user/login",
           { email: this.email, password: this.password },
           { headers: { "Content-Type": "application/json" } }
         );
+        console.log(response);
         if (response.status === 200) {
           this.isLoading = true;
           const redirectUrl = response.data.redirectUrl;
@@ -62,7 +63,8 @@ export default {
     },
     async socialLogin() {
       try {
-        window.location.href = "http://localhost:8081/user/socialLogin";
+        window.location.href =
+          "http://ec2-43-201-47-190.ap-northeast-2.compute.amazonaws.com:8081/user/socialLogin";
       } catch (error) {
         console.error(error);
       }
