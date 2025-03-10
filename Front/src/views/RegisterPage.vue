@@ -63,7 +63,7 @@
       <select id="gender" v-model="userInfo.gender">
         <option value="">성별</option>
         <option value="male">남성</option>
-        <option value="femaie">여성</option>
+        <option value="female">여성</option>
       </select>
       <input type="text" id="postcode" placeholder="우편번호" />
       <br />
